@@ -1,32 +1,31 @@
 # Cosmos
-**A Network of Distributed Ledgers**
+**Uma Rede de Distribuição de Ledgers**
 
 Jae Kwon jae@tendermint.com<br/>
 Ethan Buchman ethan@tendermint.com
 
-For discussions, [join our Slack](http://forum.tendermint.com:3000/)!
+Para discussões, [entre no nosso Slack](http://forum.tendermint.com:3000/)!
 
-_NOTE: If you can read this on GitHub, then we're still actively developing this
-document.  Please check regularly for updates!_
+_NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este documento ativamente. Por favor, cheque regularmente as atualizações!_
 
-## Table of Contents ###########################################################
-  * [Introduction](#introduction)
+## Índice ###########################################################
+  * [Introdução](#introdução)
   * [Tendermint](#tendermint)
-    * [Validators](#validators)
-    * [Consensus](#consensus)
-    * [Light Clients](#light-clients)
-    * [Preventing Attacks](#preventing-attacks)
+    * [Validadores](#validadores)
+    * [Consenso](#consenso)
+    * [Clientes Light](#clientes-light)
+    * [Previnindo Ataques](#previnindo-ataques)
     * [TMSP](#tmsp)
-  * [Cosmos Overview](#cosmos-overview)
+  * [Visão Geral Cosmos](#visão geral-cosmos)
     * [Tendermint-BFT](#tendermint-bft)
-    * [Governance](#governance)
-  * [The Hub and Zones](#the-hub-and-zones)
-    * [The Hub](#the-hub)
-    * [The Zones](#the-zones)
-  * [Inter-blockchain Communication (IBC)](#inter-blockchain-communication-ibc)
-  * [Use Cases](#use-cases)
-    * [Distributed Exchange](#distributed-exchange)
-    * [Pegging to Other Cryptocurrencies](#pegging-to-other-cryptocurrencies)
+    * [Governanã](#governança)
+  * [O Hub e Zonas](#o-hub-e-zonas)
+    * [O Hub](#the-hub)
+    * [As Zonas](#as-zonas)
+  * [Comunicação Inter-blockchain (IBC)](#comunicação-inter-blockchain-ibc)
+  * [Casos de Uso](#casos de-usos)
+    * [Exchange Distribuída](#exchange-distribuída)
+    * [Pegging para outras Criptomoedas](#pegging-para-outras-criptomoedas)
     * [Ethereum Scaling](#ethereum-scaling)
     * [Multi-Application Integration](#multi-application-integration)
     * [Network Partition Mitigation](#network-partition-mitigation)
