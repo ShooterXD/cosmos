@@ -18,7 +18,7 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
     * [TMSP](#tmsp)
   * [Visão Geral Cosmos](#visão-geral-cosmos)
     * [Tendermint-BFT](#tendermint-bft)
-    * [Governanã](#governança)
+    * [Governança](#governança)
   * [O Hub e Zonas](#o-hub-e-zonas)
     * [O Hub](#the-hub)
     * [As Zonas](#as-zonas)
@@ -124,27 +124,27 @@ multi-asset de prova de estaca com um simples mecanismo de governança
 o qual permite a rede se adaptar e atualizar.  Além disso, a Cosmos Hub pode ser
 extendida por conexão com outras zonas.
 
-The hub and zones of the Cosmos network communicate with each other via an
-inter-blockchain communication (IBC) protocol, a kind of virtual UDP or TCP for
-blockchains.  Tokens can be transferred from one zone to another securely and
-quickly without the need for exchange liquidity between zones.  Instead, all
-inter-zone token transfers go through the Cosmos Hub, which keeps track of the
-total amount of tokens held by each zone.  The hub isolates each zone from the
-failure of other zones.  Because anyone can connect a new zone to the Cosmos Hub,
-zones allow for future-compatibility with new blockchain innovations.
+O hub e as zonas da rede Cosmos comunicam-se uma com a outra através de um
+protocolo de comunicação Inter-blockchain (IBC), um tipo de UDP ou TCP virtual para
+blockchains. Os tokens podem ser transferidos de uma zona para outra com segurança e
+rapidez sem necessidade de liquidez cambial entre as zonas.  Em vez disso, todas
+as transferências de tokens inter-zonas passam pelo Hub Cosmos, que mantêm
+a quantidade total de tokens detidas por cada zona. O hub isola cada zona da
+falha das outras zonas. Porque qualquer um pode conectar uma nova zona no Hub Cosmos,
+o que permite futuras compatibilidades com novas blockchains inovadoras.
 
 ## Tendermint ##################################################################
 
-In this section we describe the Tendermint consensus protocol and the interface
-used to build applications with it. For more details, see the [appendix](#appendix).
+Nesta seção, descrevemos o protocolo de consenso da Tendermint e a interface
+usada para construir aplicações através dele. Para mais detalhes, consulte o [apêndice](#apêndice).
 
-### Validators
+### Validadores
 
-In classical Byzantine fault-tolerant (BFT) algorithms, each node has the same
-weight.  In Tendermint, nodes have a non-negative amount of _voting power_, and
-nodes that have positive voting power are called _validators_.  Validators
-participate in the consensus protocol by broadcasting cryptographic signatures,
-or _votes_, to agree upon the next block.
+No algorítimo de tolerância e falhas clássicas Bizantinas (BFT), cada node tem o mesmo
+peso.  Na Tendermint, nodes tem uma quantidade positiva de _poder de voto_, e
+esses nodes que tem poder de voto positivo são chamados de _validadores_.  Validadores
+participam de um protocolo de consenso por transmissão de assinaturas criptográficas,
+ou _votos_, para concordar com o próximo bloco.
 
 Validators' voting powers are determined at genesis, or are changed
 deterministically by the blockchain, depending on the application.  For example,
@@ -156,7 +156,7 @@ never the total number of validators, unless all the validators have equal
 weight._
 _NOTE: +⅔ means "more than ⅔", while ⅓+ means "⅓ or more"._
 
-### Consensus
+### Consenso
 
 Tendermint is a partially synchronous BFT consensus protocol derived from the
 DLS consensus algorithm [\[20\]][20]. Tendermint is notable for its simplicity,
@@ -194,7 +194,7 @@ broadcasting maliciously crafted votes.  See the figure below for details.
 ![Figure of Tendermint throughput performance]
 (https://raw.githubusercontent.com/gnuclear/atom-whitepaper/master/images/tendermint_throughput_blocksize.png)
 
-### Light Clients
+### Clientes Light
 
 A major benefit of Tendermint's consensus algorithm is simplified light client
 security, making it an ideal candidate for mobile and internet-of-things use
@@ -206,7 +206,7 @@ in the latest block to determine the latest state.
 Succinct light client proofs also enable [inter-blockchain
 communication](#inter-blockchain-communication-ibc).
 
-### Preventing Attacks
+### Previnindo ataques
 
 Tendermint has protective measures for preventing certain notable
 attacks, like [long-range-nothing-at-stake double
@@ -244,7 +244,7 @@ Meanwhile, the TMSP application would be responsible for
 Tendermint is able to decompose the blockchain design by offering a very simple
 API between the application process and consensus process.
 
-## Cosmos Overview #############################################################
+## Visão Geral da Cosmos #############################################################
 
 Cosmos is a network of independent parallel blockchains that are each powered by
 classical BFT consensus algorithms like Tendermint
@@ -304,7 +304,7 @@ guarantees of Tendermint BFT consensus, and the collateral deposit of
 stakeholders--validators and delegators--provide provable, quantifiable
 security for nodes and light clients.
 
-### Governance #################################################################
+### Governança #################################################################
 
 Distributed public ledgers should have a constitution and a governance system.
 Bitcoin relies on the Bitcoin Foundation and mining to
@@ -328,7 +328,7 @@ By enabling interoperability among differing policy zones, the Cosmos network
 gives its users ultimate freedom and potential for permissionless
 experimentation.
 
-## The Hub and Zones ###########################################################
+## O Hub e as Zonas ###########################################################
 
 Here we describe a novel model of decentralization and scalability.  Cosmos is a
 network of many blockchains powered by Tendermint.  While existing proposals aim
@@ -353,7 +353,7 @@ Any of the zones can themselves be hubs to form an acyclic graph, but
 for the sake of clarity we will only describe the simple configuration where
 there is only one hub, and many non-hub zones.
 
-### The Hub
+### O Hub
 
 The Cosmos Hub is a blockchain that hosts a multi-asset distributed ledger,
 where tokens can be held by individual users or by zones themselves.  These
@@ -370,7 +370,7 @@ decentralized set of validators that can withstand the most severe attack
 scenarios, such as a continental network partition or a nation-state sponsored
 attack.
 
-### The Zones
+### As Zonas
 
 A Cosmos zone is an independent blockchain that exchanges IBC messages with the
 Hub.  From the Hub's perspective, a zone is a multi-asset dynamic-membership
@@ -391,7 +391,7 @@ failures.  For example, outbound token transfers from some (or all) zones may be
 throttled to allow for the emergency circuit-breaking of zones (a temporary halt
 of token transfers) when an attack is detected.
 
-## Inter-blockchain Communication (IBC) ########################################
+## Comunicação Inter-blockchain (IBC) ########################################
 
 Now we look at how the Hub and zones communicate with each other.  For example, if
 there are three blockchains, "Zone1", "Zone2", and "Hub", and we wish for
@@ -426,9 +426,9 @@ transaction must be posted on "Hub" with the block-hash of "Zone1" (or on
 _See [IBCBlockCommitTx](#ibcblockcommittx) and [IBCPacketTx](#ibcpacketcommit)
 for for more information on the two IBC transaction types._
 
-## Use Cases ###################################################################
+## Casos de Uso ###################################################################
 
-### Distributed Exchange
+### Exchange Distribuídas
 
 In the same way that Bitcoin is more secure by being a distributed,
 mass-replicated ledger, we can make exchanges less vulnerable to external and
@@ -476,7 +476,7 @@ without both parties having to be online.  And with Tendermint, the Cosmos hub,
 and IBC, traders can move funds in and out of the exchange to and from other
 zones with speed.
 
-### Pegging to Other Cryptocurrencies
+### Pegging para Outras Criptomoedas
 
 A privileged zone can act as the source of a pegged token of another
 cryptocurrency. A peg is similar to the relationship between a
@@ -550,7 +550,7 @@ execution per se, it can be used to coordinate token movements between Ethereum
 contracts running on different zones, providing a foundation for token-centric
 Ethereum scaling via sharding.
 
-### Multi-Application Integration
+### Integração de Multi-Aplicação
 
 Cosmos zones run arbitrary application logic, which is defined at the beginning of the
 zone's life and can potentially be updated over time by governance. Such flexibility
@@ -578,7 +578,7 @@ Thus, Cosmos may offer the best of both worlds for organizations looking to
 utilize blockchain technology but who are wary of relinquishing control completely
 to a distributed third party.
 
-### Network Partition Mitigation
+### Redução de partição de rede
 
 Some claim that a major problem with consistency-favouring consensus algorithms
 like Tendermint is that any network partition which causes there to be no single
@@ -592,7 +592,7 @@ persist in the event that the hub halts due to a temporary network partition.
 Note that this allows real geological, political, and network-topological
 features to be considered in designing robust federated fault-tolerant systems.
 
-### Federated Name Resolution System
+### Sistema de Resolução de Nomes Federados
 
 NameCoin was one of the first blockchains to attempt to solve the
 name-resolution problem by adapting the Bitcoin blockchain.  Unfortunately there
@@ -628,9 +628,9 @@ name-registration zone in Cosmos can have an associated top-level-domain
 (TLD) name such as ".com" or ".org", and each name-registration zone can have
 its own governance and registration rules.
 
-## Issuance and Incentives #####################################################
+## Emissão e Incentivos #####################################################
 
-### The Atom Token
+### O Token Atom
 
 While the Cosmos Hub is a multi-asset distributed ledger, there is a special
 native token called the _atom_.  Atoms are the only staking token of the Cosmos
@@ -643,7 +643,7 @@ validators.
 The `BurnAtomTx` transaction can be used to recover any proportionate amount of
 tokens from the reserve pool.
 
-#### Fundraiser
+#### Levantamento de Fundos
 
 The initial distribution of atom tokens and validators on Genesis will go to the
 donors of the Cosmos Fundraiser (75%), lead donors (5%), Cosmos Network
@@ -654,7 +654,7 @@ every year.
 See the [Cosmos Plan](https://github.com/cosmos/cosmos/blob/master/PLAN.md)
 for additional details.
 
-#### Vesting
+#### Investindo
 
 To prevent the fundraiser from attracting short-term speculators only interested
 in pump-and-dump schemes, the genesis atoms will not be transferrable until
@@ -664,7 +664,7 @@ constant rate every hour, determined by the total number of genesis atoms / (2 *
 and can be transferred immediately, so that bonded validators and delegators can earn
 more than 1/2 of their genesis atoms after the first year.
 
-### Limitations on the Number of Validators
+### Limitações do Número de Validadores
 
 Unlike Bitcoin or other proof-of-work blockchains, a Tendermint blockchain gets
 slower with more validators due to the increased communication complexity.
@@ -692,7 +692,7 @@ Year 10: 300
 ...
 ```
 
-### Becoming a Validator After Genesis Day
+### Tornando-se um Validador depois do dia da Genesis
 
 Atom holders who are not already can become validators by signing and
 submitting a `BondTx` transaction.  The amount of atoms provided as collateral
@@ -704,7 +704,7 @@ validator, where effective atoms include delegated atoms.  When a new validator
 replaces an existing validator in such a way, the existing validator becomes
 inactive and all the atoms and delegated atoms enter the unbonding state.
 
-### Penalties for Validators
+### Penalidades para Validadores
 
 There must be some penalty imposed on the validators for any intentional
 or unintentional deviation from the sanctioned protocol. Some evidence is
@@ -731,7 +731,7 @@ evidence of malicious behavior from entering the blockchain, the hub must
 recover with a hard-fork reorg-proposal.  (Link to "Forks and Censorship
 Attacks").
 
-### Transaction Fees
+### Taxas de Transação
 
 Cosmos Hub validators can accept any token type or combination of types as fees
 for processing a transaction.  Each validator can subjectively set whatever
@@ -750,7 +750,7 @@ Atom holders who delegate their voting power to other validators pay a
 commission to the delegated validator.  The commission can be set by each
 validator.
 
-### Incentivizing Hackers
+### Incentivando Hackers
 
 The security of the Cosmos Hub is a function of the security of the underlying
 validators and the choice of delegation by delegators.  In order to encourage
@@ -768,7 +768,7 @@ the portion of vested vs unvested atoms of validators and delegators before and
 after the `ReportHackTx` will remain the same, and the hacker bounty will
 include some unvested atoms, if any.
 
-### Governance Specification ###################################################
+### Específicação de Governança ###################################################
 
 The Cosmos Hub is operated by a distributed organization that requires a well-defined
 governance mechanism in order to coordinate various changes to the blockchain, 
@@ -789,13 +789,13 @@ voters may vote to take the deposit. If more than half of the voters choose to
 take the deposit (e.g. because the proposal was spam), the deposit goes to the
 reserve pool, except any atoms which are burned.
 
-For each proposal, voters may vote with the following options:
+Para cada proposta, os eleitores podem votar nas seguintes opições:
 
-* Yea
-* YeaWithForce
-* Nay
-* NayWithForce
-* Abstain
+* Sim
+* Com Certeza
+* Não
+* Nunca
+* Abstenção
 
 A strict majority of Yea or YeaWithForce votes (or Nay or NayWithForce votes) is
 required for the proposal to be decided as accepted (or decided as failed), but
@@ -805,17 +805,17 @@ majority is vetoed, everyone gets punished by losing `VetoPenaltyFeeBlocks`
 affected), and the party that vetoed the majority decision will be additionally
 punished by losing `VetoPenaltyAtoms` (DEFAULT 0.1%) of its atoms.
 
-### Parameter Change Proposal
+### Parâmetro de Mudança de Proposta
 
 Any of the parameters defined here can be changed with the acceptance of a
 `ParameterChangeProposal`.
 
-### Text Proposal
+### Texto da Proposta
 
 All other proposals, such as a proposal to upgrade the protocol, will be
 coordinated via the generic `TextProposal`.
 
-## Roadmap #####################################################################
+## Roteiro #####################################################################
 
 See [the Plan](https://github.com/cosmos/cosmos/blob/master/PLAN.md).
 
