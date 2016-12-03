@@ -16,7 +16,7 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
     * [Clientes Light](#clientes-light)
     * [Previnindo Ataques](#previnindo-ataques)
     * [TMSP](#tmsp)
-  * [Visão Geral Cosmos](#visão-geral-cosmos)
+  * [Visão Geral da Cosmos](#visão-geral-da-cosmos)
     * [Tendermint-BFT](#tendermint-bft)
     * [Governança](#governança)
   * [O Hub e Zonas](#o-hub-e-zonas)
