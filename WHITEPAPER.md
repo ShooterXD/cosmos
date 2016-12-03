@@ -77,7 +77,7 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
   * [Acknowledgements](#acknowledgements)
   * [Citations](#citations)
 
-## Introduction ################################################################
+## Introdução ################################################################
 
 The combined success of the open-source ecosystem, decentralized
 file-sharing, and public cryptocurrencies has inspired an understanding that
