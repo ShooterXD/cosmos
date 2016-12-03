@@ -16,7 +16,7 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
     * [Clientes Light](#clientes-light)
     * [Previnindo Ataques](#previnindo-ataques)
     * [TMSP](#tmsp)
-  * [Visão Geral Cosmos](#visão geral-cosmos)
+  * [Visão Geral Cosmos](#visão-geral-cosmos)
     * [Tendermint-BFT](#tendermint-bft)
     * [Governanã](#governança)
   * [O Hub e Zonas](#o-hub-e-zonas)
@@ -26,25 +26,24 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
   * [Casos de Uso](#casos de-usos)
     * [Exchange Distribuída](#exchange-distribuída)
     * [Pegging para outras Criptomoedas](#pegging-para-outras-criptomoedas)
-    * [Ethereum Scaling](#ethereum-scaling)
-    * [Multi-Application Integration](#multi-application-integration)
-    * [Network Partition Mitigation](#network-partition-mitigation)
-    * [Federated Name Resolution System](#federated-name-resolution-system)
-  * [Issuance and Incentives](#issuance-and-incentives)
-    * [The Atom Token](#the-atom-token)
-      * [Fundraiser](#fundraiser)
-      * [Vesting](#vesting)
-    * [Limitations on the Number of
-    Validators](#limitations-on-the-number-of-validators)
-    * [Becoming a Validator after Genesis
-    Day](#becoming-a-validator-after-genesis-day)
-    * [Penalties for Validators](#penalties-for-validators)
-    * [Transaction Fees](#transaction-fees)
-    * [Incentivizing Hackers](#incentivizing-hackers)
-  * [Governance Specification](#governance-specification)
-    * [Parameter Change Proposal](#parameter-change-proposal)
-    * [Text Proposal](#text-proposal)
-  * [Roadmap](#roadmap)
+    * [Integrando Ethereum](#integrando-ethereum)
+    * [Integração de Multi-Aplicação](#integração-de-multi-aplicação)
+    * [Redução de partição de rede](#redução-de-partição-de-rede)
+    * [Sistema de Resolução de Nomes Federados](#sistema-de-resolução-de-nomes-federados)
+  * [Emissão e Incentivos](#emissão-e-incentivos)
+    * [O Token Atom](#o-token-atom)
+      * [Levantamento de Fundos](#levantamento-de-fundos)
+      * [Investindo](#investindo)
+    * [Limitações do Número de Validadores](#limitações-do-número-de-validadores)
+    * [Tornando-se um Validador depois do dia da
+    Genesis](#tornando-se-um-validador-depois-do-dia-da-genesis)
+    * [Penalidades para Validadores](#penalidades-para-validadores)
+    * [Taxas de Transação](#taxas-de-transação)
+    * [Incentivando Hackers](#incentivando-hackers)
+  * [Específicações de governança](#específicações-de-governança)
+    * [Parâmetro de Mudança de Proposta](#parâmetro-de-mudança-de-proposta)
+    * [Texto da Proposta](#texto-da-proposta)
+  * [Roteiro](#roteiro)
   * [Related Work](#related-work)
     * [Consensus Systems](#consensus-systems)
       * [Classic Byzantine Fault Tolerance](#classic-byzantine-fault-tolerance)
@@ -79,51 +78,51 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
 
 ## Introdução ################################################################
 
-The combined success of the open-source ecosystem, decentralized
-file-sharing, and public cryptocurrencies has inspired an understanding that
-decentralized internet protocols can be used to radically improve socio-economic
-infrastructure.  We have seen specialized blockchain applications like Bitcoin
-[\[1\]][1] (a cryptocurrency), Zerocash [\[2\]][2] (a cryptocurrency for
-privacy), and generalized smart contract platforms such as Ethereum [\[3\]][3],
-with countless distributed applications for the Etherium Virtual Machine (EVM) such as Augur (a prediction
-market) and TheDAO [\[4\]][4] (an investment club).
+O sucesso combinado do ecossistema de código aberto, compartilhamento
+de arquivos descentralizado e criptomoedas públicas tem inspirado um conhecimento sobre
+protocolos descentralizados na Internet que podem ser utilizados para melhorar radicalmente
+a infraestrutura. Vimos aplicações de blockchain especializadas como Bitcoin
+[\[1\]][1] (uma criptomoeda), Zerocash [\[2\]][2] (uma criptomoeda para privacidade
+), and generalized smart contract platforms such as Ethereum [\[3\]][3],
+com inúmeras aplicações distribuídas para a Etherium Virtual Machine (EVM), como Augur (uma previsão
+de mercado) e TheDAO [\[4\]][4] (um clube de investimento).
 
-To date, however, these blockchains have suffered from a number of drawbacks,
-including their gross energy inefficiency, poor or limited performance, and
-immature governance mechanisms.  Proposals to scale
-Bitcoin's transaction throughput, such as Segregated-Witness [\[5\]][5] and
-BitcoinNG [\[6\]][6], are vertical scaling solutions that remain
-limited by the capacity of a single physical machine, in order to ensure the
-property of complete auditability.  The Lightning Network [\[7\]][7] can help
-scale Bitcoin transaction volume by leaving some transactions off the ledger
-completely, and is well suited for micropayments and privacy-preserving payment
-rails, but may not be suitable for more generalized scaling needs.
+Contudo, até à data, estas blockchains sofreram uma série de inconvenientes,
+incluindo sua ineficiência energética, desempenho fraco ou limitado e
+mecanismos de governança imaturos. Propostas de escala
+de processamento de transações da Bitcoin, como Testemunhas Separadas [\[5\]][5] e
+BitcoinNG [\[6\]][6], soluções de escalonamento vertical que permanecem
+limitadas pela capacidade de uma única máquina física, a fim de
+proporcionar uma auditabilidade completa. A Rede Lightning [\[7\]][7] pode ajudar
+o Bitcoin no quesito volume de transações, deixando algumas transações completamente
+fora da carteira, e é bem adequado para micropagamentos e preservando a privacisadade por pagamentos
+Rails, mas pode não ser adequado para necessidades de escala mais abrangente.
 
-An ideal solution is one that allows multiple parallel blockchains to
-interoperate while retaining their security properties. This has proven
-difficult, if not impossible, with proof-of-work. Merged mining, for instance,
-allows the work done to secure a parent chain to be reused on a child chain,
-but transactions must still be validated, in order, by each node, and a
-merge-mined blockchain is vulnerable to attack if a majority of the hashing
-power on the parent is not actively merge-mining the child.  An academic review
-of [alternative blockchain network
-architectures](http://vukolic.com/iNetSec_2015.pdf) is provided for additional
-context, and we provide summaries of other proposals and their drawbacks in
-[Related Work](#related-work).
+Uma solução ideal é a de permitir blockchains paralelos múltiplos para
+interoperação, mantendo suas propriedades de segurança. Isto provou
+ser difícil, se não impossível, com prova de trabalho. A mineração combinada, por exemplo,
+permite que o trabalho feito para proteger uma blockchain mãe seja reutilizado em uma blockchain nova,
+mas as transações ainda devem ser validadas, em ordem, por cada nó, e uma
+blockchain Merge-mined é vulnerável a ataques se a maioria do poder de
+hashing sobre a mãe não é ativamente merge-mined da nova. Uma revisão acadêmica
+do [arquiteturas de redes alternativas blockchain
+](http://vukolic.com/iNetSec_2015.pdf) é fornecida para
+contextualizar, e fornecemos resumos de outras propostas e suas desvantagens em
+[Trabalho relatado](#trabalho-relatado).
 
-Here we present Cosmos, a novel blockchain network architecture that addresses all
-of these problems.  Cosmos is a network of many independent blockchains, called
-zones.  The zones are powered by Tendermint Core [\[8\]][8], which provides a
-high-performance, consistent, secure
-[PBFT-like](http://tendermint.com/blog/tendermint-vs-pbft/) consensus engine,
-where strict [fork-accountability](#fork-accountability) guarantees hold over
-the behaviour of malicious actors.  Tendermint Core's BFT consensus algorithm is
-well suited for scaling public proof-of-stake blockchains.
+Nesse relato nós apresentamos a Cosmos, uma novela da arquitetura de rede blockchain que aborda todos
+esses problemas. Cosmos é uma rede de muitos blockchains independentes, chamados
+Zonas. As zonas são alimentadas pelo Tendermint Coreork [\[8\]][8], que fornece uma
+alta performace, consistência, segurança
+[PBFT-como](http://tendermint.com/blog/tendermint-vs-pbft/) um mecanismo de consenso
+rigoroso, onde [fork-responsável](#fork-responsável) tem-se garantias de deter
+comportamentos maliciosos. O algoritmo de consenso BFT do Tendermint Core é
+bem adaptado para integrar blockchains públicas de prova de estaca.
 
-The first zone on Cosmos is called the Cosmos Hub. The Cosmos Hub is a
-multi-asset proof-of-stake cryptocurrency with a simple governance mechanism
-which enables the network to adapt and upgrade.  In addition, the Cosmos Hub can be
-extended by connecting other zones.
+A primeira zona na Cosmos é chamada de Cosmos Hub. A Cosmos Hub é uma criptomoeda 
+multi-asset de prova de estaca com um simples mecanismo de governança
+o qual permite a rede se adaptar e atualizar.  Além disso, a Cosmos Hub pode ser
+extendida por conexão com outras zonas.
 
 The hub and zones of the Cosmos network communicate with each other via an
 inter-blockchain communication (IBC) protocol, a kind of virtual UDP or TCP for
