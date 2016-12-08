@@ -410,299 +410,299 @@ permite uma blockchain provar para qualquer espectador que o pacote recebido foi
 publicado pelo remetente, via Merkle-proof para um hash-de-bloco
 recente.
 
-By splitting the IBC mechanics into two separate transactions, we allow the 
-native fee market-mechanism of the receiving chain to determine which packets 
-get committed (i.e. acknowledged), while allowing for complete freedom on the 
-sending chain as to how many outbound packets are allowed.
+Ao misturar o mecanismo ICB em duas transações separadas, nós permitimos
+que o mecanismo de mercado de taxa nativa da blockchain recebedora determine quais pacotes
+irão se comprometer (isto é, ser reconhecido), permitindo simultaneamente que uma
+blockchain envie de quantos pacotes de saída forem permitidos.
 
-![Figure of Zone1, Zone2, and Hub IBC without
-acknowledgement](https://raw.githubusercontent.com/gnuclear/atom-whitepaper/master/msc/ibc_without_ack.png)
+![Figura da Zona1, Zona2, e Hub IBC sem
+reconhecimento](https://raw.githubusercontent.com/gnuclear/atom-whitepaper/master/msc/ibc_without_ack.png)
 
-<CAPTION on a figure> In the example above, in order to update the block-hash of
-"Zone1" on "Hub" (or of "Hub" on "Zone2"), an `IBCBlockCommitTx`
-transaction must be posted on "Hub" with the block-hash of "Zone1" (or on
-"Zone2" with the block-hash of "Hub").
+<CAPTION em uma figura> no exemplo acima, para atualizar o hash de blocos da
+"Zona1" no "Hub" (ou do "Hub" para a "Zona2"), uma transação `IBCBlockCommitTx`
+precisa ser feita no "Hub" com o hash de bloco da "Zona1" (ou na
+"Zona2" com o hash de bloco do "Hub").
 
-_See [IBCBlockCommitTx](#ibcblockcommittx) and [IBCPacketTx](#ibcpacketcommit)
-for for more information on the two IBC transaction types._
+_Veja [IBCBlockCommitTx](#ibcblockcommittx) e [IBCPacketTx](#ibcpacketcommit)
+para mais informações sobre os 2 tipos de transação IBC._
 
 ## Casos de Uso ###################################################################
 
 ### Exchange Distribuídas
 
-In the same way that Bitcoin is more secure by being a distributed,
-mass-replicated ledger, we can make exchanges less vulnerable to external and
-internal hacks by running it on the blockchain.  We call this a distributed
-exchange.
+Da mesma forma que Bitcoin é mais seguro por ter uma distribuíção,
+e replicação em massa, podemos tornar as exchanges menos vulneráveis a
+Hacks internos executando-a no blockchain. Chamamos isso de exchange
+distribuída.
 
-What the cryptocurrency community calls a decentralized exchange today are
-based on something called "atomic cross-chain" (AXC) transactions.  With an AXC
-transaction, two users on two different chains can make two transfer
-transactions that are committed together on both ledgers, or none at all (i.e.
-atomically).  For example, two users can trade bitcoins for ether (or any two
-tokens on two different ledgers) using AXC transactions, even though Bitcoin
-and Ethereum are not connected to each other.  The benefit of running an
-exchange on AXC transactions is that neither users need to trust each other or
-the trade-matching service.  The downside is that both parties need to be
-online for the trade to occur.
+O que a comunidade de criptomoedas chama hoje de intercâmbio descentralizado
+baseado em algo chamado transações "atomic cross-chain" (AXC).  Com uma transação
+AXC, dois usuários em duas diferentes cadeias podem fazer duas transações
+de transferências que serão feitas juntas nas duas ledgers, ou nenhuma (isto é,
+Atomicamente). Por exemplo, dois usuários podem trocar bitcoins por ether (ou qualquer dois
+Tokens em dois ledgers diferentes) usando transações AXC, mesmo que o Bitcoin
+e o Ethereum não estão conectados entre si. O benefício de executar um
+troca em transações AXC é que nenhum dos usuários precisam confiar um no outro ou
+no serviço de correspondência comercial. A desvantagem é que ambas as partes precisam estar
+on-line para o negócio ocorrer.
 
-Another type of decentralized exchange is a mass-replicated distributed
-exchange that runs on its own blockchain.  Users on this kind of exchange can
-submit a limit order and turn their computer off, and the trade can execute
-without the user being online.  The blockchain matches and completes the trade
-on behalf of the trader.
+Outro tipo de intercâmbio descentralizado é um sistema de
+exchange que funciona em seu próprio blockchain. Os usuários deste tipo de exchange podem
+enviar uma ordem de limite e desligar o computador, e o negócio pode ser executado
+sem que o usuário esteja online. O blockchain combina e completa o negócio
+em nome do negociante.
 
-A centralized exchange can create a deep orderbook of limit orders and thereby
-attract more traders.  Liquidity begets more liquidity in the exchange world,
-and so there is a strong network effect (or at least a winner-take-most effect)
-in the exchange business.  The current leader for cryptocurrency exchanges
-today is Poloniex with a 24-hour volume of $20M, and in second place is
-Bitfinex with a 24-hour volume of $5M.  Given such strong network effects, it
-is unlikely for AXC-based decentralized exchanges to win volume over the
-centralized exchanges.  For a decentralized exchange to compete with a
-centralized exchange, it would need to support deep orderbooks with limit
-orders.  Only a distributed exchange on a blockchain can provide that.
+Uma exchange centralizada pode criar um vasto livro de ordens de ordens e
+atrair mais comerciantes. A liquidez gera mais liquidez no mundo cambial,
+e assim há um forte efeito na rede (ou pelo menos efeito de vencedor-leva-mais)
+no negócio de câmbio. A atual líder para troca de criptomoedas
+hoje é a Poloniex com um volume de 24 milhões de dólares por dia, e em segundo lugar a
+Bitfinex com um volume de US$5 milhões por dia. Dados esses fortes efeitos na rede,
+é improvável que as exchanges descentralizadas baseadas no AXC ganhem volume
+centrais. Para uma exchange descentralizada competir com um
+exchange centralizada, seria necessário dar suporte aos livros de 
+ordens. Somente uma exchange distribuída em uma blockchain pode fornecer isso.
 
-Tendermint provides additional benefits of faster transaction commits.  By
-prioritizing fast finality without sacrificing consistency, zones in Cosmos can
-finalize transactions fast -- for both exchange order transactions as well as
-IBC token transfers to and from other zones.
+Tendermint fornece benefícios adicionais para realizar uma transação mais rápida. Com a
+finalidade de dar prioridade a rapidez sem sacrificar a consistência, as zonas no Cosmos podem
+finalizar transações rápidas - tanto para transações de ordem de
+transferências de tokens quanto para outras zonas IBC.
 
-Given the state of cryptocurrency exchanges today, a great application for
-Cosmos is the distributed exchange (aka the Cosmos DEX).  The transaction
-throughput capacity as well as commit latency can be comparable to those of
-centralized exchanges.  Traders can submit limit orders that can be executed
-without both parties having to be online.  And with Tendermint, the Cosmos hub,
-and IBC, traders can move funds in and out of the exchange to and from other
-zones with speed.
+Dado o estado das exchanges de criptomoedas hoje em dia, uma grande
+exchange distribuída da Cosmos (aka o Cosmos DEX). A transação e
+a capacidade de processamento, bem como a latência de processos, podem ser
+centrais. Os comerciantes podem enviar ordens de limite que podem ser executadas
+sem que ambas as partes tenham que estar online. E com Tendermint, o Cosmos Hub,
+e o IBC, os comerciantes podem mover fundos dentro e fora da exchange e para outras
+zonas com rapidez.
 
 ### Pegging para Outras Criptomoedas
 
-A privileged zone can act as the source of a pegged token of another
-cryptocurrency. A peg is similar to the relationship between a
-Cosmos hub and zone; both must keep up with the latest blocks of the
-other in order to verify proofs that tokens have moved from one to the other.  A
-peg-zone on the Cosmos network keeps up with the Hub as well as the
-other cryptocurrency.  The indirection through the peg-zone allows the logic of
-the Hub to remain simple and agnostic to other blockchain consensus strategies
-such as Bitcoin's proof-of-work mining.
+Uma zona privilegiada pode agir como token simbolico de uma
+criptomoeda. A peg é semelhante à relação entre uma
+zona e o Cosmos Hub; Ambos devem manter-se atualizados com os
+outros, afim de verificar provas de que os tokens passaram de um para o outro. A
+Peg-zone na rede Cosmos mantém-se com o Hub, bem como o
+outra cryptomoeda. A indireção através da peg-zone permite a lógica de
+que o Hub permaceça simples e imutável para outras estratégias de consenso blockchain
+como a mineração de prova-de-trabalho do Bitcoin.
 
-For instance, a Cosmos zone with a specific validator set, possibly the same as
-that of the Hub, could act as an ether-peg, where the TMSP-application on
-the zone (the "peg-zone") has mechanisms to exchange IBC messages with a
-peg-contract on the external Ethereum blockchain (the "origin").  This contract
-would allow ether holders to send ether to the peg-zone by sending it to the
-peg-contract on Ethereum.  Once ether is received by the peg-contract, the ether
-cannot be withdrawn unless an appropriate IBC packet is received by the
-peg-contract from the peg-zone. When a peg-zone receives an IBC packet proving
-that ether was received in the peg-contract for a particular Ethereum account, a
-corresponding account is created on the peg-zone with that balance.  Ether on
-the peg-zone ("pegged-ether") can then be transferred to and from the Hub,
-and later be destroyed with a transaction that sends it to a particular
-withdrawal address on Ethereum. An IBC packet proving that the transaction
-occured on the peg-zone can be posted to the Ethereum peg-contract to allow the
-ether to be withdrawn.
+Por exemplo, uma zona Cosmos com um conjunto validador específico, possivelmente o mesmo que
+o Hub, poderia atuar como um ether-peg, onde a aplicação TMSP sobre
+a zona ("peg-zone") tem mecanismos para trocar mensagens IBC com um
+Peg-contract na blockchain (a "origem"). Este contrato
+permite que os titulares de ether enviem ether para a zona de peg, enviando-o para
+Peg-contract na Ethereum. Uma vez que o ether é recebido pelo peg-contract, o ether
+não pode ser retirado a menos que um pacote IBC apropriado seja recebido pelo
+Peg-contract da peg-zone. Quando uma zona recebe um pacote IBC provando
+que o ether foi recebido no peg-contract para uma determinada conta Ethereum,
+a conta correspondente é criada na peg-zone com esse saldo. O ether na
+peg-zone ("pegged-ether") pode então ser transferido para o Hub,
+e mais tarde ser destruído com uma transação que envia para um determinado
+endereço de retirada no Ethereum. Um pacote IBC provando que a transação
+na Peg-Zone podem ser lançados no peg-contract Ethereum para permitir que o
+Ether seja retirado.
 
-Of course, the risk of such a pegging contract is a rogue validator set.  ⅓+
-Byzantine voting power could cause a fork, withdrawing ether from the
-peg-contract on Ethereum while keeping the pegged-ether on the peg-zone. Worse,
-+⅔ Byzantine voting power can steal ether outright from those who sent it to the
-peg-contract by deviating from the original pegging logic of the peg-zone.
+Naturalmente, o risco do contrato do pegging e um conjunto de validadores desonestos. -bizantino.
+O poder de voto bizantino poderia causar um fork, retirando o ether do
+peg-contract mantendo o pegged-ether na peg-zone. Na pior das hipóteses,
++⅔ do poder de voto bizantino pode roubar o ether daqueles que o enviaram para o
+peg-contract, desviando-se da pegging e da peg-zone de origem.
 
-It is possible to address these issues by designing the peg to be totally
-accountable.  For example, all IBC packets, from the hub and 
-the origin, might require acknowledgement by the peg-zone in such a way that all
-state transitions of the peg-zone can be efficiently challenged and verified by
-either the hub or the origin's peg-contract.  The Hub and the origin should
-allow the peg-zone validators to post collateral, and token transfers out of the
-peg-contract should be delayed (and collateral unbonding period sufficiently
-long) to allow for any challenges to be made by independent auditors.  We leave
-the design of the specification and implementation of this system open as a
-future Cosmos improvement proposal, to be passed by the Cosmos Hub's governance
-system.
+É possível abordar essas questões projetando o peg para ser totalmente
+responsável. Por exemplo, todos os pacotes IBC, a partir do hub de
+origem, poderão exigir um reconhecimento pela zona de fixação de tal forma que
+as transições de estados da peg-zone podem ser desafiadas de forma eficiente e verificadas pelo
+hub ou pelo peg-contract de origem. O Hub e a origem devem
+permitir que os validadores da zona de fixação apresentem garantias e as transferências
+contratuais devem ser atrasadas (e um prazo de vinculação de colateral suficientemente
+longo) para permitir que quaisquer desafios sejam feitos por auditores independentes. Nós saímos
+da concepção, da especificação e implementação deste sistema aberto como uma
+futura proposta de melhoria da Cosmos, a ser aprovada pela governança do sistema do Cosmos
+Hub.
 
-While the socio-political atmosphere is not quite evolved enough yet, we can
-extend the mechanism to allow for zones which peg to the fiat currency of a
-nation state by forming a validator set out of some combination of institutions
-responsible for the nation's currency, most particularly, its banks. Of course,
-extra precautions must be taken to only accept currencies backed by strong legal
-systems which can enforce auditability of the banks' activities by a sufficiently
-large group of trusted notaries and institutions.
+Embora a atmosfera sociopolítica ainda não esteja bastante desenvolvida, podemos
+aumentar o mecanismo para permitir que as zonas se liguem as moedas FIAT de um
+estado-nação, formando um validador responsável estabelecido a partir de uma combinação da
+moeda da nação, mais particularmente, pelos seus bancos. Claro,
+precauções adicionais devem ser tomadas para aceitar apenas moedas apoiadas por
+sistemas que possam reforçar a capacidade de auditoria das atividades dos bancos
+e de notário grupos de grandes instituições de confiança.
 
-A result of this integration could be, for instance, allowing anyone with
-an account at a bank on the zone to move dollars from their bank account
-to other accounts on the zone, or to the hub, or to another zone entirely.  
-In this regard, the Cosmos Hub can act as a seamless conduit between fiat 
-currencies and cryptocurrencies, removing the barriers that have until now limited 
-their interoperability to the realm of exchanges.
+Um resultado dessa integração poderia ser, por exemplo, permitir que
+uma conta em um banco na zona possa mover dólares de sua conta bancária
+para outras contas na zona, ou para o hub, ou inteiramente para outra zona.
+Nesse sentido, o Cosmos Hub pode atuar como um canal sem
+moedas e criptomoedas, removendo as barreiras que limitariam
+sua interoperabilidade com o mundo dos intercâmbios.
 
 ### Ethereum Scaling
 
-Solving the scaling problem is an open issue for Ethereum.  Currently,
-Ethereum nodes process every single transaction and also store all the states.
+Resolver o problema de escalonamento é um problema aberto para a Ethereum. Atualmente,
+os nós Ethereum processam cada transação única e também armazenam todos os estados.
 [link](https://docs.google.com/presentation/d/1CjD0W4l4-CwHKUvfF5Vlps76fKLEC6pIwu1a_kC_YRQ/mobilepresent?slide=id.gd284b9333_0_28).
 
-Since Tendermint can commit blocks much faster than Ethereum's proof-of-work,
-EVM zones powered by Tendermint consensus and operating on pegged-ether can
-provide higher performance to Ethereum blockchains.  Additionally, though the
-Cosmos Hub and IBC packet mechanics does not allow for arbitrary contract logic
-execution per se, it can be used to coordinate token movements between Ethereum
-contracts running on different zones, providing a foundation for token-centric
-Ethereum scaling via sharding.
+Desde que a Tendermint pode realizar os blocos muito mais rápido do que a prova-de-trabalho da Ethereum,
+as zonas EVM alimentadas e operando pelo consenso da Tendermint 
+fornecem maior desempenho para blocos da blockchain Ethereum. Além disso, embora o
+Cosmos Hub e o mecanismo de pacotes IBC não permitam a execução da lógica de contratos 
+arbitrários, podem ser usados para coordenar os movimentos Ethereum e a execução de
+contratos simbólicos em diferentes zonas, fornecendo uma base para
+o token ethereum através de sharding.
 
 ### Integração de Multi-Aplicação
 
-Cosmos zones run arbitrary application logic, which is defined at the beginning of the
-zone's life and can potentially be updated over time by governance. Such flexibility
-allows Cosmos zones to act as pegs to other cryptocurrencies such as Ethereum or
-Bitcoin, and it also permits derivatives of those blockchains, utilizing the
-same codebase but with a different validator set and initial distribution. This
-allows many existing cryptocurrency frameworks, such as those of Ethereum,
-Zerocash, Bitcoin, CryptoNote and so on, to be used with Tendermint Core, 
-which is a higher performance consensus engine, on a common network, opening tremendous
-opportunity for interoperability across platforms.  Furthermore, as a
-multi-asset blockchain, a single transaction may contain multiple inputs and
-outputs, where each input can be any token type, enabling Cosmos to serve
-directly as a platform for decentralized exchange, though orders are assumed to
-be matched via other platforms. Alternatively, a zone can serve as a distributed
-fault-tolerant exchange (with orderbooks), which can be a strict improvement
-over existing centralized cryptocurrency exchanges which tend to get hacked over
-time. 
+As zonas Cosmos executam lógica de aplicação arbitrária, que é definida no início da
+vida da zona e podem potencialmente ser atualizados ao longo do tempo pela governança. Essa flexibilidade
+permite que as zonas Cosmos ajam como pegs para outras criptomoedas como Ethereum ou
+Bitcoin, e também permite derivados desses blockchains, que utilizam a
+mesma base de código, mas com um conjunto de validador diferente e distribuição inicial. Isto
+permite que muitos tipos de criptomoedas existentes, como as Ethereum,
+Zerocash, Bitcoin, CryptoNote e assim por diante, possam ser usados com o Tendermint Core,
+que é um motor de consenso de maior desempenho, em uma rede comum, abrindo
+oportunidade de interoperabilidade entre as plataformas. Além disso, como
+multi-asset blockchain, uma única transação pode conter vários
+onde cada entrada pode ser qualquer tipo de token, permitindo a Cosmos
+ser uma plataforma para a exchange descentralizada, mesmo que as ordens sejam
+para outras plataformas. Alternativamente, uma zona pode servir como um
+fault-tolerant (com livros de ordens), o que pode ser uma melhoria
+nas exchanges centralizadas de criptomoeda que tendem a ser invadidas com
+o tempo.
 
-Zones can also serve as blockchain-backed versions of enterprise and government
-systems, where pieces of a particular service that are traditionally run by an
-organization or group of organizations are instead run as a TMSP application on
-a certain zone, which allows it to inherit the security and interoperability of the
-public Cosmos network without sacrificing control over the underlying service.
-Thus, Cosmos may offer the best of both worlds for organizations looking to
-utilize blockchain technology but who are wary of relinquishing control completely
-to a distributed third party.
+As zonas também podem servir como versões bloqueadas de empresas e
+sistemas, onde partes de um serviço particular da organização ou grupo de organizações
+que são tradicionalmente executadas como um aplicativo TMSP
+em uma certa zona, o que lhe permite receber a segurança e a interoperabilidade da
+rede pública Cosmos sem sacrificar o controle sobre o serviço subjacente.
+Assim, a Cosmos pode oferecer o melhor da tecnologia blockchain para ambos os mundos e 
+para as organizações, que se recusam a deixar completamente o controle
+para um distribuidor terceirizado.
 
 ### Redução de partição de rede
 
-Some claim that a major problem with consistency-favouring consensus algorithms
-like Tendermint is that any network partition which causes there to be no single
-partition with +⅔ voting power (e.g. ⅓+ going offline) will halt consensus
-altogether. The Cosmos architecture can help mitigate this problem by using a global
-hub with regional autonomous zones, where voting power for each zone are
-distributed based on a common geographic region.  For instance, a common
-paradigm may be for individual cities, or regions, to operate their own zones
-while sharing a common hub (e.g. the Cosmos Hub), enabling municipal activity to
-persist in the event that the hub halts due to a temporary network partition.
-Note that this allows real geological, political, and network-topological
-features to be considered in designing robust federated fault-tolerant systems.
+Alguns afirmam que um grande problema da coerência-favorecendo algoritmos de consenso
+como o Tendermint é que qualquer partição de rede que faz com que não haja uma única
+partição com +⅔ de poder de votação (por exemplo, ⅓+ ficando offline) irá parar o consenso
+completamente. A arquitetura Cosmos pode ajudar a mitigar esse problema usando umas
+zonas regionais autônomas, onde o poder de voto para cada zona é
+distribuído com base em uma região geográfica comum. Por exemplo, um
+parâmetro pode ser para cidades individuais, ou regiões, para operar suas próprias zonas
+de partilha com um centro em comum (por exemplo, o Cosmos Hub), permitindo que a
+o hub possa parar devido a uma paralisação de rede temporária.
+Observe que isso permite uma geologia real, política e rede-topológica,
+que são recursos a serem considerados no projeto de sistemas robustos federados de fault-tolerant.
 
 ### Sistema de Resolução de Nomes Federados
 
-NameCoin was one of the first blockchains to attempt to solve the
-name-resolution problem by adapting the Bitcoin blockchain.  Unfortunately there
-have been several issues with this approach.
+NameCoin foi uma das primeiras blockchains a tentar resolver o
+problema de resolução de nomes através de uma adaptação da blockchain do Bitcoin. Infelizmente
+têm ocorrido várias questões com esta abordagem.
 
-With Namecoin, we can verify that, for example, <em>@satoshi</em> was registered with a
-particular public key at some point in the past, but we wouldn’t know whether
-the public key had since been updated recently unless we download all the blocks
-since the last update of that name.  This is due to the limitation of Bitcoin's
-UTXO transaction Merkle-ization model, where only the transactions (but not
-mutable application state) are Merkle-ized into the block-hash. This lets us
-prove existence, but not the non-existence of later updates to a name.  Thus, we
-can't know for certain the most recent value of a name without trusting a full
-node, or incurring significant costs in bandwidth by downloading the whole
-blockchain.
+Com a Namecoin, podemos verificar que, por exemplo, o nome <em>@satoshi</em> foi registrado como
+particular, em algum momento do passado, mas não saberíamos se
+a chave pública tinha sido atualizada recentemente, a menos que baixassemos todos os blocos
+desde a última atualização desse nome. Isto é devido as limitações do modelo de
+Merkle-ization de UTXO do Bitcoin, onde somente as transações (não
+mutáveis) são Merkle-ized no hash do bloco. Isso nos permite
+provar a existência, mas não a não-existência de atualizações posteriores a um nome. Assim, nós
+não podemos saber com certeza o valor mais recente de um nome sem confiar em um
+nó, ou recorrer a gastos significativos na largura de banda, baixando o
+Blockchain.
 
-Even if a Merkle-ized search tree were implemented in NameCoin, its dependency
-on proof-of-work makes light client verification problematic. Light clients must
-download a complete copy of the headers for all blocks in the entire blockchain
-(or at least all the headers since the last update to a name).  This means that
-the bandwidth requirements scale linearly with the amount of time [\[21\]][21].
-In addition, name-changes on a proof-of-work blockchain requires waiting for
-additional proof-of-work confirmation blocks, which can take up to an hour on
-Bitcoin.
+Mesmo se uma árvore de pesquisa Merkle-ized for implementada na NameCoin, sua dependência
+sobre a prova-de-trabalho torna a verificação do cliente light problemática. Os clientes light devem
+baixar uma cópia completa dos cabeçalhos para todos os blocos em toda a blockchain
+(ou pelo menos todos os cabeçalhos desde a última atualização de um nome). Isso significa que
+os requisitos de largura de banda crescem linearmente com a o passar do tempo [\[21\]][21].
+Além disso, as mudanças de nome em um bloco de prova-de-trabalho requerem
+a confirmação do trabalho, o que pode levar até uma hora
+no Bitcoin.
 
-With Tendermint, all we need is the most recent block-hash signed by a quorum of
-validators (by voting power), and a Merkle proof to the current value associated
-with the name.  This makes it possible to have a succinct, quick, and secure
-light-client verification of name values.
+Com Tendermint, tudo o que precisamos é o hash de bloco mais recente assinado por um quorum de
+validadores (por poder de voto), e uma prova Merkle para o valor atual associado
+com o nome. Isto torna possível ter uma solução sucinta, rápida e segura
+para a verificação de valores de nome no cliente light.
 
-In Cosmos, we can take this concept and extend it further. Each
-name-registration zone in Cosmos can have an associated top-level-domain
-(TLD) name such as ".com" or ".org", and each name-registration zone can have
-its own governance and registration rules.
+Na Cosmos, podemos aplicar este conceito e estendê-lo ainda mais. Cada
+zona de registro de nomes na Cosmos pode ter um domínio de nível superior (TLD)
+associado, como o ".com" ou ".org", e cada zona de registro de nome pode ter
+suas próprias regras de governança e registro.
 
 ## Emissão e Incentivos #####################################################
 
 ### O Token Atom
 
-While the Cosmos Hub is a multi-asset distributed ledger, there is a special
-native token called the _atom_.  Atoms are the only staking token of the Cosmos
-Hub.  Atoms are a license for the holder to vote, validate, or delegate to other
-validators.  Like Ethereum's ether, atoms can also be used to pay for
-transaction fees to mitigate spam.  Additional inflationary atoms and block
-transaction fees are rewarded to validators and delegators who delegate to
-validators.
+Enquanto o Cosmos Hub é um ledger de distribuíção  multi-asset, há um token nativo
+especial chamado _atom_. Os atoms são o únicos símbolos do Cosmos
+Hub. Os atoms são uma licença para o titular votar, validar ou delegar
+validadores. Como o ether da Ethereum, os atoms também podem ser usados para
+reduzir o spam. Atoms inflacionários adicionais e as taxas do bloco de transação
+são recompensadas pelos validadores e delegados que
+o validarão.
 
-The `BurnAtomTx` transaction can be used to recover any proportionate amount of
-tokens from the reserve pool.
+A transação `BurnAtomTx` pode ser usada para cobrir proporcionalmente a quantidade
+de tokens reservados para a pool.
 
 #### Levantamento de Fundos
 
-The initial distribution of atom tokens and validators on Genesis will go to the
-donors of the Cosmos Fundraiser (75%), lead donors (5%), Cosmos Network
-Foundation (10%), and ALL IN BITS, Inc (10%).  From genesis onward, 1/3 of the
-total amount of atoms will be rewarded to bonded validators and delegators
-every year.
+A distribuição inicial dos tokens atom e validadores na Genesis vão para os
+doadores do Levantamento de Fundos da Cosmos (75%), doadores pesados (5%), Fundação da Rede
+Cosmos (10%), e a ALL IN BITS, Inc (10%).  A partir da Genesis em diante, 1/3 da
+quantidade total de atoms será recompensada aos validadores e delegados durante
+todo o ano.
 
-See the [Cosmos Plan](https://github.com/cosmos/cosmos/blob/master/PLAN.md)
-for additional details.
+Veja o [Plano Cosmos](https://github.com/cosmos/cosmos/blob/master/PLAN.md)
+para detalhes adicionais.
 
 #### Investindo
 
-To prevent the fundraiser from attracting short-term speculators only interested
-in pump-and-dump schemes, the genesis atoms will not be transferrable until
-they have vested.  Each account will vest atoms over a period of 2 years at a
-constant rate every hour, determined by the total number of genesis atoms / (2 *
-365 * 24) hours.  Atoms earned by the inflationary block reward are pre-vested,
-and can be transferred immediately, so that bonded validators and delegators can earn
-more than 1/2 of their genesis atoms after the first year.
+Para evitar que o levantamento de fundos atraia especuladores de curto prazo apenas interessados
+em esquemas de pump and dump, os atoms da Genesis não serão transferíveis até
+eles tenham investido. Cada conta irá adquirir atoms durante um período de 2 anos com
+taxa constante a cada hora, determinada pelo número total de atoms da Genesis/(2*
+365 * 24) horas. Os atoms ganhos pela recompensa do bloco são pré-investidos,
+e podem ser transferidos imediatamente, de modo que os validadores e os delegados ligados possam ganhar
+mais da metade de seus atoms da Genesis após o primeiro ano.
 
 ### Limitações do Número de Validadores
 
-Unlike Bitcoin or other proof-of-work blockchains, a Tendermint blockchain gets
-slower with more validators due to the increased communication complexity.
-Fortunately, we can support enough validators to make for a robust globally
-distributed blockchain with very fast transaction confirmation times, and, as
-bandwidth, storage, and parallel compute capacity increases, we will be able to
-support more validators in the future.
+Diferentemente do Bitcoin ou de outros blockchains de prova-de-trabalho, o blockchain Tendermint será
+mais lento com mais validadores devido ao aumento da complexidade da comunicação.
+Felizmente, podemos oferecer suporte a validadores suficientes para a
+distribuição na Blockchain com tempos de confirmação de transação muito mais rápidos e, através de
+largura de banda, armazenamento e aumento da capacidade de computação paralela, seremos capazes de
+ter mais validadores no futuro.
 
-On genesis day, the maximum number of validators will be set to 100, and this
-number will increase at a rate of 13% for 10 years, and settle at 300
-validators.
+No dia da Genesis, o número máximo de validadores será definido como 100,
+o número aumentará a uma taxa de 13% durante 10 anos até atingir a marca de 300
+Validadores.
 
 ```
-Year 0: 100
-Year 1: 113
-Year 2: 127
-Year 3: 144
-Year 4: 163
-Year 5: 184
-Year 6: 208
-Year 7: 235
-Year 8: 265
-Year 9: 300
-Year 10: 300
+Ano 0: 100
+Ano 1: 113
+Ano 2: 127
+Ano 3: 144
+Ano 4: 163
+Ano 5: 184
+Ano 6: 208
+Ano 7: 235
+Ano 8: 265
+Ano 9: 300
+Ano 10: 300
 ...
 ```
 
 ### Tornando-se um Validador depois do dia da Genesis
 
-Atom holders who are not already can become validators by signing and
-submitting a `BondTx` transaction.  The amount of atoms provided as collateral
-must be nonzero.  Anyone can become a validator at any time, except when the
-size of the current validator set is greater than the maximum number of
-validators allowed.  In that case, the transaction is only valid if the amount
-of atoms is greater than the amount of effective atoms held by the smallest
-validator, where effective atoms include delegated atoms.  When a new validator
-replaces an existing validator in such a way, the existing validator becomes
-inactive and all the atoms and delegated atoms enter the unbonding state.
+Os titulares de atoms que ainda não são capazes de se tornarem validadores assinados e
+submeter uma transação `BondTx`. A quantidade de atoms fornecida como garantia
+deve ser diferente de zero. Qualquer pessoa pode se tornar um validador a qualquer momento, exceto quando o
+tamanho do conjunto de validadores atual é maior que o número máximo de
+validadores permitidos. Nesse caso, a transação só é válida se o montante
+de atoms é maior do que a quantidade de atoms efetivos mantidos pelo menor
+validador, onde atoms eficazes incluem atoms delegados. Quando um novo validador
+substitui um validador existente de tal forma, o validador existente torna-se
+inativo e todos os atoms e atoms delegados entram no estado de unbonding.
 
 ### Penalidades para Validadores
 
