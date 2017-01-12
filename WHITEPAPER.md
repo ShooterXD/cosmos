@@ -706,30 +706,13 @@ inativo e todos os atoms e atoms delegados entram no estado de unbonding.
 
 ### Penalidades para Validadores
 
-There must be some penalty imposed on the validators for any intentional
-or unintentional deviation from the sanctioned protocol. Some evidence is
-immediately admissible, such as a double-sign at the same height and round, or a
-violation of "prevote-the-lock" (a rule of the Tendermint consensus protocol).
-Such evidence will result in the validator losing its good standing and its
-bonded atoms as well its proportionate share of tokens in the reserve pool --
-collectively called its "stake" -- will get slashed.
+Deve haver alguma penalidade imposta aos validadores por qualquer desvio intencional ou não intencional do protocolo sancionado. Algumas evidências são imediatamente admissíveis, como um double-sign na mesma altura e volta, ou uma violação de "prevote-the-lock" (uma regra do protocolo de consenso Tendermint). Tais evidências resultarão em que o validador perca sua boa reputação e seus átomos ligados, bem como sua proporção de tokens na pool reserva - coletivamente chamados de "stake" - serão cortados.
 
-Sometimes, validators will not be available, either due to regional network
-disruptions, power failure, or other reasons.  If, at any point in the past
-`ValidatorTimeoutWindow` blocks, a validator's commit vote is not included in
-the blockchain more than `ValidatorTimeoutMaxAbsent` times, that validator will
-become inactive, and lose `ValidatorTimeoutPenalty` (DEFAULT 1%) of its stake.
+Às vezes, os validadores não estarão disponíveis, devido a interrupções na rede regional, falha de energia ou outros motivos. Se, em qualquer ponto nos blocos 'ValidatorTimeoutWindow' anteriores, o voto de validação de um validador não estiver incluído na cadeia de blocos mais do que 'ValidatorTimeoutMaxAbsent' vezes, esse validador ficará inativo e perderá 'ValidatorTimeoutPenalty' (1% PADRÃO) de sua participação.
 
-Some "malicious" behavior does not produce obviously discernable evidence on the
-blockchain. In these cases, the validators can coordinate out of band to force
-the timeout of these malicious validators, if there is a supermajority
-consensus.
+Alguns comportamentos "maliciosos" não produzem provas obviamente discerníveis sobre a blockchain. Nesses casos, os validadores podem coordenar fora da banda para forçar o tempo limite desses validadores maliciosos, se houver um consenso majoritário.
 
-In situations where the Cosmos Hub halts due to a ⅓+ coalition of voting power
-going offline, or in situations where a ⅓+ coalition of voting power censor
-evidence of malicious behavior from entering the blockchain, the hub must
-recover with a hard-fork reorg-proposal.  (Link to "Forks and Censorship
-Attacks").
+Em situações em que o Cosmos Hub parar devido a uma coalizão de ⅓+ de poder de voto offline, ou em situações onde uma coalizão de ⅓+ de poder de voto censurar evidências de comportamento malicioso entrando na blockchain, o hub deve recuperar com um hard-fork de proposta reorganizacional. (Link to "Forks and Censorship Attacks").
 
 ### Taxas de Transação
 
