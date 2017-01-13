@@ -64,7 +64,7 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
     * [Clientes Leves do Tendermint](#clientes-leves-do-tendermint)
     * [Prevenção de Ataques de Longo Alcance](#prevenção-de-ataques-de-longo-alcance)
     * [Superando Forks e Ataques de Censura](#superando-forks-e-ataques-de-censura)
-    * [TMSP Specification](#tmsp-specification)
+    * [Especificação TMSP](#especificação-tmsp)
     * [IBC Packet Delivery
     Acknowledgement](#ibc-packet-delivery-acknowledgement)
     * [Merkle Tree &amp; Proof
@@ -884,70 +884,25 @@ Se um adversário globalmente ativo também estivesse envolvido, poderia dividir
 
 Para estes tipos de ataques, um subconjunto de validadores deve coordenar através de meios externos para assinar um proposta de reorganização que escolhe um fork (e qualquer prova disso) e o subconjunto inicial de validadores com suas assinaturas. Os validadores que assinam tal proposta de reorganização deixam seu colateral em todos os outros forks. Os clientes devem verificar as assinaturas na proposta de reorganização, verificar qualquer evidência e fazer um julgamento ou solicitar ao usuário final uma decisão. Por exemplo, uma carteira para celular um aplicativo que pode alertar o usuário com um aviso de segurança, enquanto um refrigerador pode aceitar qualquer proposta de reorganização assinada por +½ dos validadores originais por poder de voto.
 
-No non-synchronous Byzantine fault-tolerant algorithm can come to consensus when
-⅓+ of voting power are dishonest, yet a fork assumes that ⅓+ of voting power
-have already been dishonest by double-signing or lock-changing without
-justification.  So, signing the reorg-proposal is a coordination problem that
-cannot be solved by any non-synchronous protocol (i.e. automatically, and
-without making assumptions about the reliability of the underlying network).
-For now, we leave the problem of reorg-proposal coordination to human
-coordination via social consensus on internet media.  Validators must take care
-to ensure that there are no remaining network partitions prior to signing a
-reorg-proposal, to avoid situations where two conflicting reorg-proposals are
-signed.
+Nenhum algoritmo não-sincrônico tolerante a falhas Bizantino pode chegar a um consenso quando ⅓+ de poder de voto for desonesto, mas um fork supõe que ⅓+ do poder de voto já foram desonestos por dupla assinatura ou bloqueio de mudança sem justificativa. Portanto, assinar a proposta de reorganização é um problema de coordenação que não pode ser resolvido por qualquer protocolo não-sincronico (isto é, automaticamente e sem fazer suposições sobre a confiabilidade da rede subjacente). Por enquanto, deixamos o problema da coordenação da proposta de reorganização para a coordenação humana através do consenso social na mídia na internet. Os validadores devem ter cuidado para garantir que não haja partições de rede remanescentes antes de assinar uma proposta de reorganização, para evitar situações em que duas propostas de reorganização em conflito sejam assinadas.
 
-Assuming that the external coordination medium and protocol is robust, it
-follows that forks are less of a concern than censorship attacks.
+Assumindo que o meio de coordenação é externo e o protocolo é robusto, resulta-se que os forks são uma preocupação menor do que os ataques de censura.
 
-In addition to forks and censorship, which require ⅓+ Byzantine voting power, a
-coalition of +⅔ voting power may commit arbitrary, invalid state.  This is
-characteristic of any (BFT) consensus system. Unlike double-signing, which
-creates forks with easily verifiable evidence, detecting committment of an
-invalid state requires non-validating peers to verify whole blocks, which
-implies that they keep a local copy of the state and execute each transaction,
-computing the state root independently for themselves.  Once detected, the only
-way to handle such a failure is via social consensus.  For instance, in
-situations where Bitcoin has failed, whether forking due to software bugs (as in
-March 2013), or committing invalid state due to Byzantine behavior of miners (as
-in July 2015), the well connected community of businesses, developers, miners,
-and other organizations established a social consensus as to what manual actions
-were required by participants to heal the network.  Furthermore, since
-validators of a Tendermint blockchain may be expected to be identifiable,
-commitment of an invalid state may even be punishable by law or some external
-jurisprudence, if desired.
+Além de forks e censura, que exigem ⅓+ poder de votação Bizantina, uma coalizão de +⅔ poder de voto pode ser pratica arbitrária, estado inválido. Esta é a característica de qualquer sistema de consenso (BFT). Ao contrário da dupla assinatura, que cria forks com provas facilmente verificáveis, a detecção de obrigatoriedade de um estado inválido requer que os pares não validadores verifiquem blocos inteiros, o que implica que eles mantêm uma cópia local do estado e executam cada transação, computando a raiz de estado de forma independente para eles mesmos. Uma vez detectado, a única maneira de lidar com essa falha é através do consenso social. Por exemplo, em situações em que o Bitcoin falhou, seja por causa de bugs de software (como em março de 2013), ou praticar um estado inválido devido ao comportamento Bizantino dos mineradores (como em julho de 2015), a comunidade bem conectada de negócios, desenvolvedores, mineradores e outras organizações estabeleceu um consenso social sobre quais ações manuais se faziam necessárias para curar a rede. Além disso, uma vez que se pode esperar que os validadores de uma cadeia de blocos de Tendermint sejam identificáveis, o compromisso de um estado inválido pode até ser punido por lei ou por alguma jurisprudência externa, se desejado.
 
-### TMSP Specification
+### Especificação TMSP
 
-TMSP consists of 3 primary message types that get delivered from the core to the
-application. The application replies with corresponding response messages.
+TMSP consiste em 3 tipos de mensagens primárias que são entregues do núcleo para o aplicativo. O aplicativo responde com mensagens de resposta correspondentes.
 
-The `AppendTx` message is the work horse of the application. Each transaction in
-the blockchain is delivered with this message. The application needs to validate
-each transactions received with the AppendTx message against the current state,
-application protocol, and the cryptographic credentials of the transaction. A
-validated transaction then needs to update the application state — by binding a
-value into a key values store, or by updating the UTXO database.
+A mensagem `AppendTx` é o cavalo de trabalho da aplicação. Cada transação na blockchain é entregue com esta mensagem. O aplicativo precisa validar cada transação recebida com a mensagem AppendTx contra o estado atual, o protocolo de aplicativo e as credenciais criptográficas da transação. Uma transação validada precisa atualizar o estado do aplicativo - vinculando um valor a um armazenamento de valores chave ou atualizando o banco de dados UTXO.
 
-The `CheckTx` message is similar to AppendTx, but it’s only for validating
-transactions. Tendermint Core’s mempool first checks the validity of a
-transaction with CheckTx, and only relays valid transactions to its peers.
-Applications may check an incrementing nonce in the transaction and return an
-error upon CheckTx if the nonce is old.
+A mensagem `CheckTx` é semelhante à AppendTx, mas é apenas para validar transações. O mempool do Tendermint Core primeiro verifica a validade de uma transação com o CheckTx e apenas relata transações válidas para seus pares. Os aplicativos podem verificar um nonce incremental na transação e retornar um erro em CheckTx se o nonce é antigo.
 
-The `Commit` message is used to compute a cryptographic commitment to the
-current application state, to be placed into the next block header. This has
-some handy properties. Inconsistencies in updating that state will now appear as
-blockchain forks which catches a whole class of programming errors. This also
-simplifies the development of secure lightweight clients, as Merkle-hash proofs
-can be verified by checking against the block-hash, and the block-hash is signed
-by a quorum of validators (by voting power).
+A mensagem `Commit` é usada para calcular uma obrigação criptográfica com o estado atual da aplicação, para ser colocada no próximo cabeçalho do bloco. Isso tem algumas propriedades úteis. Inconsistências na atualização desse estado agora aparecerão como forks do blockchain que captura uma classe inteira de erros de programação. Isso também simplifica o desenvolvimento de clientes leves e seguros, já que as provas de Merkle-hash podem ser provadas verificando o hash de blocos, e o hash de blocos é assinado por um quórum de validadores (por poder de voto).
 
-Additional TMSP messages allow the application to keep track of and change the
-validator set, and for the application to receive the block information, such as
-the height and the commit votes.  
+Mensagens TMSP adicionais permitem que o aplicativo acompanhe e altere o conjunto de validadores e que o aplicativo receba as informações do bloco, como a altura e os votos de confirmação.
 
-TMSP requests/responses are simple Protobuf messages.  Check out the [schema
-file](https://github.com/tendermint/tmsp/blob/master/types/types.proto).
+Pedidos/respostas TMSP são simples mensagens Protobuf. Confira o [arquivo do esquema] (https://github.com/tendermint/tmsp/blob/master/types/types.proto).
 
 ##### AppendTx
   * __Arguments__:
