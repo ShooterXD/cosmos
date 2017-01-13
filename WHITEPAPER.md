@@ -869,90 +869,21 @@ Em espírito semelhante do Ethereum, o Tendermint permite que os aplicativos inc
 
 ### Prevenção de ataques de longo alcance
 
-Assuming a sufficiently resilient collection of broadcast networks and a static
-validator set, any fork in the blockchain can be detected and the deposits of
-the offending validators slashed.  This innovation, first suggested by Vitalik
-Buterin in early 2014, solves the nothing-at-stake problem of other
-proof-of-stake cryptocurrencies (see [Related Work](#related-work)). However,
-since validator sets must be able to change, over a long range of time the
-original validators may all become unbonded, and hence would be free to create a
-new chain from the genesis block, incurring no cost as they no longer have
-deposits locked up.  This attack came to be known as the Long Range Attack (LRA),
-in contrast to a Short Range Attack, where validators who are currently bonded
-cause a fork and are hence punishable (assuming a fork-accountable BFT algorithm
-like Tendermint consensus). Long Range Attacks are often thought to be a
-critical blow to proof-of-stake.
+Assumindo uma coleção suficientemente elástica de redes de difusão e um conjunto de validador estático, qualquer fork na blockchain pode ser detectado e os depósitos dos validadores ofensivos cortados. Esta inovação, sugerida pela primeira vez por Vitalik Buterin no início de 2014, resolve o problema do "nada a perder" de outras criptomoedas de PoW (ver [Trabalho Relacionado](#related-work)). No entanto, uma vez que os conjuntos de validadores devem ser capazes de mudar, durante um longo período de tempo, os validadores originais podem tornar-se não ligados e, portanto, seriam livres para criar uma nova cadeia a partir do bloco gênese, não incorrendo nenhum custo, visto que eles não tem depósitos trancados. Este ataque veio a ser conhecido como Ataque de Longo Alcance (Long Range Attack - LRA), em contraste com um Ataque de Curto Alcance, onde os validadores que estão atualmente ligados causam um fork e são, portanto, puníveis (assumindo um algoritimo BFT de fork-responsável como o consenso Tendermint). Ataques de longo alcance são muitas vezes pensados para serem um golpe crítico para o PoW.
 
-Fortunately, the LRA can be mitigated as follows.  First, for a validator to
-unbond (thereby recovering their collateral deposit and no longer earning fees
-to participate in the consensus), the deposit must be made untransferable for an
-amount of time known as the "unbonding period", which may be on the order of
-weeks or months.  Second, for a light client to be secure, the first time it
-connects to the network it must verify a recent block-hash against a trusted
-source, or preferably multiple sources.  This condition is sometimes referred to
-as "weak subjectivity".  Finally, to remain secure, it must sync up with the
-latest validator set at least as frequently as the length of the unbonding
-period. This ensures that the light client knows about changes to the validator
-set before a validator has its capital unbonded and thus no longer at stake,
-which would allow it to deceive the client by carrying out a long range attack
-by creating new blocks beginning back at a height where it was bonded (assuming
-it has control of sufficiently many of the early private keys).
+Felizmente, o LRA pode ser atenuado da seguinte forma. Em primeiro lugar, para que um validador se desatar (assim recuperando seu depósito colateral e não mais ganhando taxas para participar no consenso), o depósito deve ser tornado intransferível por um período de tempo conhecido como o "unbonding period" (período de desatamento), que pode ser na ordem de semanas ou meses. Em segundo lugar, para um cliente leve ser seguro, a primeira vez que ele se conecta à rede, ele deve verificar um hash de bloqueio recente contra uma fonte confiável ou, preferencialmente, várias fontes. Esta condição é por vezes referida como "subjetividade fraca". Finalmente, para permanecer seguro, ele deve sincronizar com o mais recente validador definido, pelo menos, tão frequentemente quanto a duração do período de desatamento. Isso garante que o cliente leve saiba sobre as alterações no conjunto de validação definido antes de um validador não ter mais o seu capital ligado e, portanto, não mais em jogo, o que permitiria enganar o cliente, executando um ataque de longo alcance, criando novos blocos re-começando em uma altura a qual foi ligado (assumindo que tem controle de muitas das primeiras chaves privadas).
 
-Note that overcoming the LRA in this way requires an overhaul of the original
-security model of proof-of-work. In PoW, it is assumed that a light client can
-sync to the current height from the trusted genesis block at any time simply by
-processing the proof-of-work in every block header.  To overcome the LRA,
-however, we require that a light client come online with some regularity to
-track changes in the validator set, and that the first time they come online
-they must be particularly careful to authenticate what they hear from the
-network against trusted sources. Of course, this latter requirement is similar
-to that of Bitcoin, where the protocol and software must also be obtained from a
-trusted source.
+Note que superar o LRA desta forma requer uma revisão do modelo de segurança original do PoW. No PoW, presume-se que um cliente leve pode sincronizar com a altura atual do bloco gênese confiável a qualquer momento simplesmente processando o PoW em cada cabeçalho de bloco. Para superar o LRA, entretanto, exigimos que um cliente leve entre em linha com alguma regularidade para rastrear mudanças no conjunto de validadores e que, na primeira vez em que eles fiquem on-line, eles devem ser particularmente cuidadosos para autenticar o que ouvem da rede contra fontes confiáveis . Naturalmente, este último requisito é semelhante ao do Bitcoin, onde o protocolo e o software também devem ser obtidos a partir de uma fonte confiável.
 
-The above method for preventing LRA is well suited for validators and full nodes
-of a Tendermint-powered blockchain because these nodes are meant to remain
-connected to the network.  The method is also suitable for light clients that
-can be expected to sync with the network frequently.  However, for light clients
-that are not expected to have frequent access to the internet or the blockchain
-network, yet another solution can be used to overcome the LRA.  Non-validator
-token holders can post their tokens as collateral with a very long unbonding
-period (e.g. much longer than the unbonding period for validators) and serve
-light clients with a secondary method of attesting to the validity of current
-and past block-hashes. While these tokens do not count toward the security of
-the blockchain's consensus, they nevertheless can provide strong guarantees for
-light clients.  If historical block-hash querying were supported in Ethereum,
-anyone could bond their tokens in a specially designed smart contract and
-provide attestation services for pay, effectively creating a market for
-light-client LRA security.
+O método acima para prevenir LRA é bem adequado para validadores e nós completos de uma blockchain alimentada por Tendermint porque estes nós são destinados a permanecerem conectados à rede. O método também é adequado para clientes leves que podem ser esperados para sincronizar com a rede com freqüência. No entanto, para os clientes leves que não se espera ter acesso frequente à Internet ou à rede da blockchain, ainda pode ser utilizada outra solução para superar o LRA. Os detentores de tokens não validadores podem publicar os seus tokens como colaterais com um período de não ligação muito longo (por exemplo, muito mais longo do que o período de não ligação para validadores) e servir clientes leves com um método secundário de atestar a validade dos blocos atuais e hashes de blocos passados. Embora esses tokens não contam para a segurança do consenso da blockchain, eles podem fornecer fortes garantias para clientes leves. Se a consulta histórica de hash de blocos fosse suportada no Ethereum, qualquer pessoa poderia vincular seus tokens em um contrato inteligente projetado especialmente para isso e fornecer serviços de comprovação de pagamentos, efetivamente criando um mercado para a segurança contra LRA de cliente leve.
 
-### Overcoming Forks and Censorship Attacks
+### Superando Forks e Ataques de Censura
 
-Due to the definition of a block commit, any ⅓+ coalition of voting power can
-halt the blockchain by going offline or not broadcasting their votes. Such a
-coalition can also censor particular transactions by rejecting blocks that
-include these transactions, though this would result in a significant proportion
-of block proposals to be rejected, which would slow down the rate of block
-commits of the blockchain, reducing its utility and value. The malicious
-coalition might also broadcast votes in a trickle so as to grind blockchain
-block commits to a near halt, or engage in any combination of these attacks.
-Finally, it can cause the blockchain to fork, by double-signing or violating the
-locking rules.
+Devido à definição de uma confimação de bloco, qualquer coalizão de poder de voto ⅓+ pode interromper a blockchain ficando off-line ou não transmitir os seus votos. Tal coalizão também pode censurar transações particulares rejeitando blocos que incluem essas transações, embora isso resultaria em uma proporção significativa de propostas de blocos a serem rejeitadas, o que iria retardar a taxa de blocos confirmados da blockchain, reduzindo sua utilidade e valor. A coalizão mal-intencionada também pode transmitir votos em um fio de modo a triturar os blocos confirmados da blockchain para quase parar, ou se envolver em qualquer combinação desses ataques. Finalmente, isso pode fazer com que a cadeia de blocos "forke" (bifurque), por dupla assinatura ou violação as regras de bloqueio.
 
-If a globally active adversary were also involved, it could partition the network in
-such a way that it may appear that the wrong subset of validators were
-responsible for the slowdown. This is not just a limitation of Tendermint, but
-rather a limitation of all consensus protocols whose network is potentially
-controlled by an active adversary.
+Se um adversário globalmente ativo também estivesse envolvido, poderia dividir a rede de tal maneira que possa parecer que o subconjunto errado de validadores era responsável pela desaceleração. Esta não é apenas uma limitação do Tendermint, mas sim uma limitação de todos os protocolos de consenso cuja rede é potencialmente controlada por um adversário ativo.
 
-For these types of attacks, a subset of the validators should coordinate through
-external means to sign a reorg-proposal that chooses a fork (and any evidence
-thereof) and the initial subset of validators with their signatures. Validators
-who sign such a reorg-proposal forego their collateral on all other forks.
-Clients should verify the signatures on the reorg-proposal, verify any evidence,
-and make a judgement or prompt the end-user for a decision.  For example, a
-phone wallet app may prompt the user with a security warning, while a
-refrigerator may accept any reorg-proposal signed by +½ of the original
-validators by voting power.
+Para estes tipos de ataques, um subconjunto de validadores deve coordenar através de meios externos para assinar um proposta de reorganização que escolhe um fork (e qualquer prova disso) e o subconjunto inicial de validadores com suas assinaturas. Os validadores que assinam tal proposta de reorganização deixam seu colateral em todos os outros forks. Os clientes devem verificar as assinaturas na proposta de reorganização, verificar qualquer evidência e fazer um julgamento ou solicitar ao usuário final uma decisão. Por exemplo, uma carteira para celular um aplicativo que pode alertar o usuário com um aviso de segurança, enquanto um refrigerador pode aceitar qualquer proposta de reorganização assinada por +½ dos validadores originais por poder de voto.
 
 No non-synchronous Byzantine fault-tolerant algorithm can come to consensus when
 ⅓+ of voting power are dishonest, yet a fork assumes that ⅓+ of voting power
