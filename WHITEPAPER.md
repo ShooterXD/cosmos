@@ -790,105 +790,45 @@ A crítica sobre papel da Stellar nos sistemas PoS baseados em Tendermint é ate
 
 #### BitcoinNG
 
-BitcoinNG is a proposed improvement to Bitcoin that would allow for forms of
-vertical scalability, such as increasing the block size, without the negative
-economic consequences typically associated with such a change, such as the
-disproportionately large impact on small miners.  This improvement is achieved
-by separating leader election from transaction broadcast: leaders are first
-elected by proof-of-work in "micro-blocks", and then able to broadcast
-transactions to be committed until a new micro-block is found. This reduces the
-bandwidth requirements necessary to win the PoW race, allowing small miners to
-more fairly compete, and allowing transactions to be committed more regularly by
-the last miner to find a micro-block.
+O BitcoinNG é uma proposta de melhoria do Bitcoin que permitiria formas de escalabilidade vertical, como o aumento do tamanho do bloco, sem as conseqüências econômicas negativas normalmente associadas a tal mudança, como o impacto desproporcionalmente grande sobre os pequenos mineradores. Esta melhoria é conseguida separando a eleição do líder da transmissão da transação: os líderes são eleitos pela primeira vez por prova de trabalho(PoW) em "microblocos", e então são capazes de transmitir transações a serem confirmadas até que um novo microbloco seja encontrado. Isso reduz os requisitos de largura de banda necessários para vencer a corrida PoW, permitindo que os pequenos mineiros possam competir mais justamente, e permitindo que as transações sejam confirmadas com mais regularidade pelo último minerador para encontrar um micro-bloco.
 
 #### Casper
 
-Casper [\[16\]][16] is a proposed proof-of-stake consensus algorithm for
-Ethereum.  Its prime mode of operation is "consensus-by-bet".  By letting 
-validators iteratively bet on which block they believe will become committed 
-into the blockchain based on the other bets that they have seen so far,
-finality can be achieved eventually.
-[link](https://blog.ethereum.org/2015/12/28/understanding-serenity-part-2-casper/).
-This is an active area of research by the Casper team.  The challenge is in
-constructing a betting mechanism that can be proven to be an evolutionarily
-stable strategy.  The main benefit of Casper as compared to Tendermint may be in
-offering "availability over consistency" -- consensus does not require a +⅔
-quorum of voting power -- perhaps at the cost of commit speed or
-implementation complexity.
+Casper [\[16\]][16] é uma proposta de algoritmo de consenso PoS para o Ethereum. Seu modo principal de operação é "consenso-por-aposta". Ao permitir que os validadores apostem iterativamente em qual bloco eles acreditam que será confirmado na blockchain com base nas outras apostas que eles têm visto até agora, a finalidade pode ser alcançada eventualmente. [link](https://blog.ethereum.org/2015/12/28/understanding-serenity-part-2-casper/). Esta é uma área ativa de pesquisa da equipe de Casper. O desafio está na construção de um mecanismo de apostas que pode ser comprovado como uma estratégia evolutivamente estável. O principal benefício da Casper em relação à Tendermint pode ser a oferta de "disponibilidade sobre a consistência" - consenso não requer um quórum +⅔ de poder de voto - talvez ao custo de velocidade de confirmação ou complexidade de implementação.
 
-### Horizontal Scaling
+### Escala Horizontal
 
-#### Interledger Protocol
+#### Protocolo Interledger
 
-The Interledger Protocol [\[14\]][14] is not strictly a scalability solution. It
-provides an ad hoc interoperation between different ledger systems through a
-loosely coupled bilateral relationship network.  Like the Lightning Network, the
-purpose of ILP is to facilitate payments, but it specifically focuses on
-payments across disparate ledger types, and extends the atomic transaction
-mechanism to include not only hash-locks, but also a quorum of notaries (called
-the Atomic Transport Protocol).  The latter mechanism for enforcing atomicity in
-inter-ledger transactions is similar to Tendermint's light-client SPV echanism,
-so an illustration of the distinction between ILP and Cosmos/IBC is warranted,
-and provided below.
+O Protocolo Interledger [\[14\]][14] não é estritamente uma solução de escalabilidade. Ele fornece uma interoperabilidade ad hoc entre diferentes sistemas de ledger através de uma rede de relações bilaterais livremente acopladas. Tal como a Lightning Network, a finalidade do ILP é facilitar pagamentos, mas focaliza especificamente pagamentos em diferentes tipos de ledger, estendendo o mecanismo de transações atômicas para incluir não apenas hash-locks, mas também um quórum de notários (chamado de Atomic Transport Protocol). O último mecanismo para reforçar a atomicidade em transacções entre-ledger é semelhante ao mecanismo SPV do cliente leve do Tendermint, então uma ilustração da distinção entre ILP e Cosmos/IBC é garantida, e fornecida abaixo.
 
-1. The notaries of a connector in ILP do not support membership changes, and
-   do not allow for flexible weighting between notaries.  On the other hand,
-IBC is designed specifically for blockchains, where validators can have
-different weights, and where membership can change over the course of the
-blockchain.
+1. Os notários de um conector em ILP não suportam mudanças de consentimento, e não permitem uma pesagem flexível entre notários. Por outro lado, o IBC é projetado especificamente para blockchains, onde os validadores podem ter diferentes pesos, e onde o consentimento pode mudar ao longo da cadeia de blocos.
 
-2. As in the Lightning Network, the receiver of payment in ILP must be online to
-   send a confirmation back to the sender.  In a token transfer over IBC, the
-validator-set of the receiver's blockchain is responsible for providing
-confirmation, not the receiving user.
+2. Como na Lightning Network, o receptor do pagamento em ILP deve estar on-line para enviar uma confirmação de volta ao remetente. Em uma transferência de token sobre IBC, o conjunto de validadores da blockchain do receptor é responsável por fornecer a confirmação, não o usuário receptor.
 
-3. The most striking difference is that ILP's connectors are not responsible or
-   keeping authoritative state about payments, whereas in Cosmos, the validators
-of a hub are the authority of the state of IBC token transfers as well as the
-authority of the amount of tokens held by each zone (but not the amount of
-tokens held by each account within a zone).  This is the fundamental innovation
-that allows for secure asymmetric tranfer of tokens from zone to zone; the
-analog to ILP's connector in Cosmos is a persistent and maximally secure
-blockchain ledger, the Cosmos Hub.
+3. A diferença mais notável é que os conectores do ILP não são responsáveis ou mantêm o estado autoritário sobre os pagamentos, enquanto que no Cosmos, os validadores de um hub são a autoridade do estado das transferências de tokens do IBC, bem como a autoridade da quantidade de tokens mantidos por cada zona (mas não a quantidade de tokens mantidos por cada conta dentro de uma zona). Esta é a inovação fundamental que permite a tranferência assimétrica segura de tokens de zona para zona; O conector analógico do ILP no Cosmos é uma persistente e maximamente segura ledger de blockchain, o Cosmos Hub.
 
-4. The inter-ledger payments in ILP need to be backed by an exchange orderbook,
-   as there is no asymmetric transfer of coins from one ledger to another, only
-the transfer of value or market equivalents.
+4. Os pagamentos entre contas no ILP precisam ser suportados por uma ordem de compra/venda, uma vez que não há transferência assimétrica de moedas de um ledger para outro, apenas a transferência de valor ou equivalentes de mercado.
 
 #### Sidechains
 
-Sidechains [\[15\]][15] are a proposed mechanism for scaling the Bitcoin network
-via alternative blockchains that are "pegged" to the Bitcoin blockchain.
-Sidechains allow bitcoins to effectively move from the Bitcoin blockchain to the
-sidechain and back, and allow for experimentation in new features on the
-sidechain.  As in the Cosmos Hub, the sidechain and Bitcoin serve as
-light-clients of each other, using SPV proofs to determine when coins should be
-transferred to the sidechain and back.  Of course, since Bitcoin uses
-proof-of-work, sidechains centered around Bitcoin suffer from the many problems
-and risks of proof-of-work as a consensus mechanism.  Furthermore, this is a
-Bitcoin-maximalist solution that doesn't natively support a variety of tokens
-and inter-zone network topology as Cosmos does. That said, the core mechanism of
-the two-way peg is in principle the same as that employed by the Cosmos network.
+Sidechains [\[15\]][15] são um mecanismo proposto para dimensionar a rede Bitcoin através de blockchains alternativas que são "atreladas" para a blockchain do Bitcoin. As Sidechains permitem que bitcoins se movam efetivamente da blockchain do Bitcoin para a sidechain e retornarem, e permitem a experimentação em novos recursos na sidechain. Como no Cosmos Hub, a sidechain e Bitcoin servem como clientes leves uns dos outros, usando provas SPV para determinar quando as moedas devem ser transferidas para a cadeia lateral e retornarem. Claro, como o Bitcoin usa PoW, sidechains centradas em torno do Bitcoin sofrem dos muitos problemas e riscos do PoW como um mecanismo de consenso. Além disso, esta é uma solução Bitcoin-maximalista que não suporta nativamente uma variedade de tokens e topologia de rede entre-zona como o Cosmos faz. Dito isto, o mecanismo de núcleo bidirecional atrelado é, em princípio, o mesmo que o empregado pela rede Cosmos.
 
-#### Ethereum Scalability Efforts
+#### Esforços de Escalabilidade do Ethereum
 
-Ethereum is currently researching a number of different strategies to shard the
-state of the Ethereum blockchain to address scalability needs. These efforts
-have the goal of maintaining the abstraction layer offered by the current
-Ethereum Virtual Machine across the shared state space. Multiple research
-efforts are underway at this time. [\[18\]][18][\[22\]][22]
+Ethereum está atualmente pesquisando uma série de estratégias diferentes para fragmentar o estado da blockchain do Ethereum para atender às necessidades de escalabilidade. Esses esforços têm como objetivo manter a camada de abstração oferecida pela atual Ethereum Virtual Machine através do espaço de estado compartilhado. Vários esforços de pesquisa estão em andamento neste momento. [\[18\]][18][\[22\]][22]
 
 ##### Cosmos vs Ethereum 2.0 Mauve
  
-Cosmos and Ethereum 2.0 Mauve [\[22\]][22] have different design goals.
+Cosmos e Ethereum 2.0 Mauve [\[22\]][22] tem diferentes objetivos de projeto.
 
-* Cosmos is specifically about tokens.  Mauve is about scaling general computation.
-* Cosmos is not bound to the EVM, so even different VMs can interoperate.
-* Cosmos lets the zone creator determine who validates the zone.
-* Anyone can start a new zone in Cosmos (unless governance decides otherwise).
-* The hub isolates zone failures so global token invariants are preserved.
+* Cosmos é especificamente sobre tokens. Malva é sobre escalonamento de computação geral.
+* O Cosmos não está ligado ao EVM, por isso mesmo VMs diferentes podem interoperar.
+* Cosmos permite que o criador da zona determine quem valida a zona.
+* Qualquer pessoa pode iniciar uma nova zona no Cosmos (a menos que a governança decida o contrário).
+* O hub isola falhas de zonas de modo que tokens invariantes sejam preservados.
 
-### General Scaling
+### Escala Geral
 
 #### Lightning Network
 
