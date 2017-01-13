@@ -44,27 +44,26 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
     * [Parâmetro de Mudança de Proposta](#parâmetro-de-mudança-de-proposta)
     * [Texto da Proposta](#texto-da-proposta)
   * [Roteiro](#roteiro)
-  * [Related Work](#related-work)
-    * [Consensus Systems](#consensus-systems)
+  * [Trabalho Relacionado](#trabalho-relacionado)
+    * [Sistema de consenso](#sistema-de-consenso)
       * [Classic Byzantine Fault Tolerance](#classic-byzantine-fault-tolerance)
-      * [BitShares Delegated Stake](#bitshares-delegated-stake)
+      * [Participação delegada do BitShares](#participação-delegada-do-bitshares)
       * [Stellar](#stellar)
       * [BitcoinNG](#bitcoinng)
       * [Casper](#casper)
-    * [Horizontal Scaling](#horizontal-scaling)
-      * [Interledger Protocol](#interledger-protocol)
+    * [Escala Horizontal](#escala-horizontal)
+      * [Protocolo Interledger](#protocolo-interledger)
       * [Sidechains](#sidechains)
-      * [Ethereum Scalability Efforts](#ethereum-scalability-efforts)
-    * [General Scaling](#general-scaling)
+      * [Esforços de Escalabilidade do Ethereum](#esforços-de-escalabilidade-do-ethereum)
+    * [Escala Geral](#escala-geral)
       * [Lightning Network](#lightning-network)
       * [Segregated Witness](#segregated-witness)
-  * [Appendix](#appendix)
-    * [Fork Accountability](#fork-accountability)
-    * [Tendermint Consensus](#tendermint-consensus)
-    * [Tendermint Light Clients](#tendermint-light-clients)
-    * [Preventing Long Range Attacks](#preventing-long-range-attacks)
-    * [Overcoming Forks and Censorship
-    Attacks](#overcoming-forks-and-censorship-attacks)
+  * [Apêndice](#apêndice)
+    * [Responsabilidade de Fork](#responsabilidade-de-fork)
+    * [Consenso Tendermint](#consenso-tendermint)
+    * [Clientes Leves do Tendermint](#clientes-leves-do-tendermint)
+    * [Prevenção de Ataques de Longo Alcance](#prevenção-de-ataques-de-longo-alcance)
+    * [Superando Forks e Ataques de Censura](#superando-forks-e-ataques-de-censura)
     * [TMSP Specification](#tmsp-specification)
     * [IBC Packet Delivery
     Acknowledgement](#ibc-packet-delivery-acknowledgement)
@@ -836,7 +835,7 @@ A Lightning Network é uma proposta de rede de transferência de token operando 
 
 Enquanto a Lightning Network também pode facilmente se estender através de várias blockchains independentes para permitir a transferência de _value_ através de um mercado de câmbio, não pode ser usado para transferir assimetricamente _tokens_ de uma blockchain para outra. O principal benefício da rede Cosmos descrita aqui é permitir tais transferências diretas de tokens. Dito isto, esperamos que os canais de pagamento e a Lightning Network sejam amplamente adotados juntamente com nosso mecanismo de transferência de token, por razões de economia de custos e privacidade.
 
-#### Segregated Witness - Testemunha Segregada
+#### Segregated Witness
 
 Segregated Witness é uma proposta de melhoria do Bitcoin [link](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki) que visa aumentar em 2X ou 3X a taxa de transferência por bloco, ao mesmo tempo que faz a sincronização de blocos ser mais rapida para novos nós. O brilho desta solução é de como ele funciona dentro das limitações do protocolo atual do Bitcoin e permite uma atualização de soft-fork (ou seja, os clientes com versões mais antigas do software continuarão funcionando após a atualização). O Tendermint, sendo um novo protocolo, não tem restrições de projeto, por isso tem prioridades diferentes de escalonamento. Sobretudo, o Tendermint usa um algoritmo de rodízio BFT baseado em assinaturas criptográficas em vez de mineração, o que trivialmente permite escalonamento horizontal através de múltiplas blockchains paralelas, enquanto que os regulares e mais frequentes blocos confirmam a escala vertical também.
 
