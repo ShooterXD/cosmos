@@ -832,119 +832,42 @@ Cosmos e Ethereum 2.0 Mauve [\[22\]][22] tem diferentes objetivos de projeto.
 
 #### Lightning Network
 
-The Lightning Network is a proposed token transfer network operating at a layer
-above the Bitcoin blockchain (and other public blockchains), enabling improvement of many
-orders of magnitude in transaction throughput by moving the majority
-of transactions outside of the consensus ledger into so-called "payment
-channels". This is made possible by on-chain cryptocurrency scripts, which
-enable parties to enter into bilateral stateful contracts where the state can
-be updated by sharing digital signatures, and contracts can be closed by finally
-publishing evidence onto the blockchain, a mechanism first popularized by
-cross-chain atomic swaps.  By opening payment channels with many parties,
-participants in the Lightning Network can become focal points for routing the
-payments of others, leading to a fully connected payment channel network, at the
-cost of capital being tied up on payment channels.
+A Lightning Network é uma proposta de rede de transferência de token operando em uma camada acima da blockchain do Bitcoin (e outras blockchains públicas), permitindo a melhoria de muitas ordens de magnitude no processamento de transações movendo a maioria das transações fora da ledger de consenso para o chamado "Canais de pagamento". Isso é possível graças a scripts de criptomoedas em cadeia, que permitem que as partes entrem em contratos estatais bilaterais onde o estado pode ser atualizado compartilhando assinaturas digitais, e os contratos podem ser fechados definitivamente publicando evidências na blockchain, um mecanismo primeiramente popularizado por trocas atômicas de cross-chains(cadeias cruzadas). Ao abrir canais de pagamento com muitas partes, os participantes da Lightning Network podem se tornar pontos focais para encaminhar os pagamentos de outros, levando a uma rede de canais de pagamento totalmente conectada, ao custo do capital estar ligado aos canais de pagamento.
 
-While the Lightning Network can also easily extend across multiple independent
-blockchains to allow for the transfer of _value_ via an exchange market, it
-cannot be used to assymetrically transfer _tokens_ from one blockchain to
-another.  The main benefit of the Cosmos network described here is to enable
-such direct token transfers.  That said, we expect payment channels and the
-Lightning Network to become widely adopted along with our token transfer
-mechanism, for cost-saving and privacy reasons.
+Enquanto a Lightning Network também pode facilmente se estender através de várias blockchains independentes para permitir a transferência de _value_ através de um mercado de câmbio, não pode ser usado para transferir assimetricamente _tokens_ de uma blockchain para outra. O principal benefício da rede Cosmos descrita aqui é permitir tais transferências diretas de tokens. Dito isto, esperamos que os canais de pagamento e a Lightning Network sejam amplamente adotados juntamente com nosso mecanismo de transferência de token, por razões de economia de custos e privacidade.
 
-#### Segregated Witness
+#### Segregated Witness - Testemunha Segregada
 
-Segregated Witness is a Bitcoin improvement proposal
-[link](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki) that aims
-to increase the per-block tranasction throughput 2X or 3X, while simultaneously
-making block syncing faster for new nodes.  The brilliance of this solution is
-in how it works within the limitations of Bitcoin's current protocol and allows
-for a soft-fork upgrade (i.e. clients with older versions of the software will
-continue to function after the upgrade).  Tendermint, being a new protocol, has no
-design restrictions, so it has a different scaling priorities.  Primarily,
-Tendermint uses a BFT round-robin algorithm based on cryptographic signatures
-instead of mining, which trivially allows horizontal scaling through multiple
-parallel blockchains, while regular, more frequent block commits allow for
-vertical scaling as well.
+Segregated Witness é uma proposta de melhoria do Bitcoin [link](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki) que visa aumentar em 2X ou 3X a taxa de transferência por bloco, ao mesmo tempo que faz a sincronização de blocos ser mais rapida para novos nós. O brilho desta solução é de como ele funciona dentro das limitações do protocolo atual do Bitcoin e permite uma atualização de soft-fork (ou seja, os clientes com versões mais antigas do software continuarão funcionando após a atualização). O Tendermint, sendo um novo protocolo, não tem restrições de projeto, por isso tem prioridades diferentes de escalonamento. Sobretudo, o Tendermint usa um algoritmo de rodízio BFT baseado em assinaturas criptográficas em vez de mineração, o que trivialmente permite escalonamento horizontal através de múltiplas blockchains paralelas, enquanto que os regulares e mais frequentes blocos confirmam a escala vertical também.
 
 <hr/>
 
-## Appendix ####################################################################
+## Apêndice ####################################################################
 
-### Fork Accountability
+### Responsabilidade de Fork
 
-A well designed consensus protocol should provide some guarantees in the event that the tolerance
-capacity is exceeded and the consensus fails.  This is especially necessary in
-economic systems, where Byzantine behaviour can have substantial financial
-reward.  The most important such guarantee is a form of _fork-accountability_,
-where the processes that caused the consensus to fail (ie.  caused clients of
-the protocol to accept different values - a fork) can be identified and punished
-according to the rules of the protocol, or, possibly, the legal system.  When
-the legal system is unreliable or excessively expensive to invoke, validators can be forced to make security
-deposits in order to participate, and those deposits can be revoked, or slashed,
-when malicious behaviour is detected [\[10\]][10].
+Um protocolo de consenso bem projetado deve fornecer algumas garantias no caso da capacidade de tolerância ser excedida e o consenso falhar. Isto é especialmente necessário nos sistemas econômicos, onde o comportamento Bizantino pode ter recompensa financeira substancial. A garantia mais importante é uma forma de _fork-accountability_, onde os processos que fizeram com que o consenso falhasse (ou seja, clientes do protocolo motivados para aceitar valores diferentes - um fork) podem ser identificados e punidos de acordo com as regras do protocolo , Ou, possivelmente, o sistema jurídico. Quando o sistema jurídico não é confiável ou é excessivamente caro para suplicar, os validadores podem ser forçados a fazerem depósitos de segurança para participar, e esses depósitos podem ser revogados ou cortados, quando um comportamento malicioso é detectado [\[10\]][10].
 
-Note this is unlike Bitcoin, where forking is a regular occurence due to
-network asynchrony and the probabilistic nature of finding partial hash
-collisions.  Since in many cases a malicious fork is indistinguishable from a
-fork due to asynchrony, Bitcoin cannot reliably implement fork-accountability,
-other than the implicit opportunity cost paid by miners for mining an orphaned
-block.
+Observe que isso é diferente do Bitcoin, onde o fork é uma ocorrência regular devido à assincronia de rede e à natureza probabilística de encontrar colisões de hash parciais. Uma vez que, em muitos casos, um fork malicioso é indistinguível de um fork devido à assincronia, o Bitcoin não pode implementar de forma confiável a responsabilidade de um fork, com exceção do custo implícito pago por mineradores que tem a oportunidade de minerarem um bloco órfão.
 
+### Consenso Tendermint 
 
-### Tendermint Consensus 
+Chamamos as fases de votação de _PreVote_ e _PreCommit_. Um voto pode ser para um bloco em particular ou para _Nil_. Chamamos uma coleção de +⅔ PreVotes para um único bloco na mesma rodada de um _Polka_, e uma coleção de +⅔ PreCommits para um único bloco na mesma rodada de um _Commit_. Se +⅔ PreCommit para Nil na mesma rodada, eles passam para a próxima rodada.
 
-We call the voting stages _PreVote_ and _PreCommit_. A vote can be for a
-particular block or for _Nil_.  We call a collection of +⅔ PreVotes for a single
-block in the same round a _Polka_, and a collection of +⅔ PreCommits for a
-single block in the same round a _Commit_.  If +⅔ PreCommit for Nil in the same
-round, they move to the next round.
+Observe que o determinismo estrito no protocolo incorre em uma suposição de sincronia fraca, pois os líderes com falhas devem ser detectados e ignorados. Assim, os validadores aguardam algum tempo, _TimeoutPropose_, antes de Prevote Nil, e o valor de TimeoutPropose aumenta a cada rodada. A progressão através do resto de uma rodada é totalmente assincrôna, onde o progresso é feito somente quando um validador ouve de +⅔ da rede. Na prática, seria necessário um adversário extremamente forte para impedir indefinidamente a suposição de sincronia fraca (fazendo com que o consenso deixasse de confirmar um bloco), e isso pode ser ainda mais difícil usando valores randomizados de TimeoutPropose em cada validador.
 
-Note that strict determinism in the protocol incurs a weak synchrony assumption
-as faulty leaders must be detected and skipped.  Thus, validators wait some
-amount of time, _TimeoutPropose_, before they Prevote Nil, and the value of
-TimeoutPropose increases with each round.  Progression through the rest of a
-round is fully asychronous, in that progress is only made once a validator hears
-from +⅔ of the network.  In practice, it would take an extremely strong
-adversary to indefinetely thwart the weak synchrony assumption (causing the
-consensus to fail to ever commit a block), and doing so can be made even more
-difficult by using randomized values of TimeoutPropose on each validator.
+Um conjunto adicional de restrições, ou Locking Rules(Regras de bloqueio), garante que a rede acabará por confirmar apenas um bloco em cada altura. Qualquer tentativa maliciosa de confirmar de causar um bloco a ser confirmado a uma determinada altura pode ser identificada. Primeiro, um PreCommit para um bloco deve vir com justificação, na forma de um Polka para esse bloco. Se o validador já tiver PreCommit um bloco na rodada <em>R_1</em>, nós dizemos que eles estão _locked_ nesse bloco, e o Polka usado para justificar o novo PreCommit na rodada <em>R_2</em> deve vir de uma rodada <em>R_polka</em> onde <em>R_1 &lt; R_polka &lt;= R_2</em>. Em segundo lugar, os validadores devem propor e/ou pré-votar o bloco que eles estão travados. Juntas, essas condições garantem que um validador não PreCommit sem evidência suficiente como justificativa, e que os validadores que já têm PreCommit não podem contribuir para a evidência de PreCommit algo mais. Isso garante a segurança e a vivacidade do algoritmo de consenso.
 
-An additional set of constraints, or Locking Rules, ensure that the network will
-eventually commit just one block at each height. Any malicious attempt to cause
-more than one block to be committed at a given height can be identified.  First,
-a PreCommit for a block must come with justification, in the form of a Polka for
-that block. If the validator has already PreCommit a block at round
-<em>R_1</em>, we say they are _locked_ on that block, and the Polka used to
-justify the new PreCommit at round <em>R_2</em> must come in a round
-<em>R_polka</em> where <em>R_1 &lt; R_polka &lt;= R_2</em>.  Second, validators
-must Propose and/or PreVote the block they are locked on.  Together, these
-conditions ensure that a validator does not PreCommit without sufficient
-evidence as justification, and that validators which have already PreCommit
-cannot contribute to evidence to PreCommit something else.  This ensures both
-safety and liveness of the consensus algorithm.
+Os detalhes completos do protocolo são descritos
+[aqui](https://github.com/tendermint/tendermint/wiki/Byzantine-Consensus-Algorithm).
 
-The full details of the protocol are described
-[here](https://github.com/tendermint/tendermint/wiki/Byzantine-Consensus-Algorithm).
+### Clientes Leves do Tendermint
 
-### Tendermint Light Clients
+A necessidade de sincronizar todos os cabeçalhos de bloco é eliminada no Tendermint-PoS, como por exemplo a existência de uma cadeia alternativa (um fork) significando que ⅓+ do stake ligado pode ser reduzido. Naturalmente, a partir que dividir requer que _someone_ compartilhe evidência de um fork, clientes leves devem armazenar qualquer bloco-hash comprometido que eles vêem. Além disso, os clientes leves podem periodicamente ficarem sincronizados com as alterações no conjunto de validadores, para evitar [ataques de longo alcance] (#preventing-long-range-attacks) (mas outras soluções são possíveis).
 
-The need to sync all block headers is eliminated in Tendermint-PoS as the
-existence of an alternative chain (a fork) means ⅓+ of bonded stake can be
-slashed.  Of course, since slashing requires that _someone_ share evidence of a
-fork, light clients should store any block-hash commits that it sees.
-Additionally, light clients could periodically stay synced with changes to the
-validator set, in order to avoid [long range
-attacks](#preventing-long-range-attacks) (but other solutions are possible).
+Em espírito semelhante do Ethereum, o Tendermint permite que os aplicativos incorporem um hash de raiz Merkle global em cada bloco, permitindo verifícações fáceis de consultas de estado para fins como saldos de contas, o valor armazenado em um contrato ou a existência de saída de uma transação não gasta, dependendo da natureza da aplicação.
 
-In spirit similar to Ethereum, Tendermint enables applications to embed a
-global Merkle root hash in each block, allowing easily verifiable state queries
-for things like account balances, the value stored in a contract, or the
-existence of an unspent transaction output, depending on the nature of the
-application.
-
-### Preventing Long Range Attacks
+### Prevenção de ataques de longo alcance
 
 Assuming a sufficiently resilient collection of broadcast networks and a static
 validator set, any fork in the blockchain can be detected and the deposits of
