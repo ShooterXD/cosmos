@@ -708,7 +708,7 @@ inativo e todos os atoms e atoms delegados entram no estado de unbonding.
 
 Deve haver alguma penalidade imposta aos validadores por qualquer desvio intencional ou não intencional do protocolo sancionado. Algumas evidências são imediatamente admissíveis, como um double-sign na mesma altura e volta, ou uma violação de "prevote-the-lock" (uma regra do protocolo de consenso Tendermint). Tais evidências resultarão em que o validador perca sua boa reputação e seus átomos ligados, bem como sua proporção de tokens na pool reserva - coletivamente chamados de "stake" - serão cortados.
 
-Às vezes, os validadores não estarão disponíveis, devido a interrupções na rede regional, falha de energia ou outros motivos. Se, em qualquer ponto nos blocos 'ValidatorTimeoutWindow' anteriores, o voto de validação de um validador não estiver incluído na cadeia de blocos mais do que 'ValidatorTimeoutMaxAbsent' vezes, esse validador ficará inativo e perderá 'ValidatorTimeoutPenalty' (1% PADRÃO) de sua participação.
+Às vezes, os validadores não estarão disponíveis, devido a interrupções na rede regional, falha de energia ou outros motivos. Se, em qualquer ponto nos blocos `ValidatorTimeoutWindow` anteriores, o voto de validação de um validador não estiver incluído na cadeia de blocos mais do que `ValidatorTimeoutMaxAbsent` vezes, esse validador ficará inativo e perderá `ValidatorTimeoutPenalty` (PADRÃO DE 1%) de sua participação.
 
 Alguns comportamentos "maliciosos" não produzem provas obviamente discerníveis sobre a blockchain. Nesses casos, os validadores podem coordenar fora da banda para forçar o tempo limite desses validadores maliciosos, se houver um consenso majoritário.
 
@@ -716,61 +716,27 @@ Em situações em que o Cosmos Hub parar devido a uma coalizão de ⅓+ de poder
 
 ### Taxas de Transação
 
-Cosmos Hub validators can accept any token type or combination of types as fees
-for processing a transaction.  Each validator can subjectively set whatever
-exchange rate it wants, and choose whatever transactions it wants, as long as
-the `BlockGasLimit` is not exceeded.  The collected fees, minus any taxes
-specified below, are redistributed to the bonded stakeholders in proportion to
-their bonded atoms, every `ValidatorPayoutPeriod` (DEFAULT 1 hour).
+Os validadores do Cosmos Hub podem aceitar qualquer tipo de token ou combinação de tipos como taxas para processar uma transação. Cada validador pode fixar subjetivamente a taxa de câmbio que quiser e escolher as transações que desejar, desde que o `BlockGasLimit` não seja excedido. As taxas cobradas, menos quaisquer impostos especificados abaixo, são redistribuídas aos stakeholders ligados em proporção aos seus átomos ligados, cada `ValidatorPayoutPeriod` (PADRÃO DE 1 hora).
 
-Of the collected transaction fees, `ReserveTax` (DEFAULT 2%) will go toward the
-reserve pool to increase the reserve pool and increase the security and value of
-the Cosmos network.  Also, a `CommonsTax` (DEFAULT 3%) will go toward the
-funding of common goods.  These funds will go to the `CustodianAddress` to be
-distributed in accordance with the decisions made by the governance system.
+Das taxas de transação cobradas, `ReserveTax` (PADRÃO DE 2%) irá para a pool reserva para aumentar a pool reserva e aumentar a segurança e o valor da rede Cosmos. Além disso, um `CommonsTax` (PADRÃO DE 3%) irá para o financiamento de bens comuns. Estes fundos vão para o `CustodianAddress` para ser distribuído de acordo com as decisões tomadas pelo sistema de governança.
 
-Atom holders who delegate their voting power to other validators pay a
-commission to the delegated validator.  The commission can be set by each
-validator.
+Os titulares de átomos que delegam o seu poder de voto a outros validadores pagam uma comissão ao validador delegado. A comissão pode ser definida por cada validador.
 
 ### Incentivando Hackers
 
-The security of the Cosmos Hub is a function of the security of the underlying
-validators and the choice of delegation by delegators.  In order to encourage
-the discovery and early reporting of found vulnerabilities, the Cosmos Hub
-encourages hackers to publish successful exploits via a `ReportHackTx`
-transaction that says, "This validator got hacked.  Please send
-bounty to this address".  Upon such an exploit, the validator and delegators
-will become inactive, `HackPunishmentRatio` (default 5%) of everyone's atoms
-will get slashed, and `HackRewardRatio` (default 5%) of everyone's atoms will
-get rewarded to the hacker's bounty address.  The validator must recover the
-remaining atoms by using their backup key.
+A segurança do Cosmos Hub é uma função da segurança dos validadores subjacentes e da escolha da delegação pelos delegados. A fim de incentivar a descoberta e notificação precoce de vulnerabilidades encontradas, o Cosmos Hub incentiva os hackers a publicar exploits bem sucedidos através de uma transação `ReportHackTx` que diz," Este validador foi hackeado. Por favor, envie recompensa para este endereço". Depois de tal exploração, o validador e os delegados ficarão inativos, `HackPunishmentRatio` (PADRÃO DE 5%) dos átomos de todos serão cortados, e` HackRewardRatio` (PADRÃO DE 5%) dos átomos de todos serão recompensado com o endereço de recompensa do hacker. O validador deve recuperar os átomos restantes usando sua chave de backup.
 
-In order to prevent this feature from being abused to transfer unvested atoms,
-the portion of vested vs unvested atoms of validators and delegators before and
-after the `ReportHackTx` will remain the same, and the hacker bounty will
-include some unvested atoms, if any.
+Para evitar que esse recurso seja abusado para transferir átomos não invadidos, a porção de átomos adquirido vs relativo de validadores e delegados antes e depois do `ReportHackTx` permanecerá o mesmo, e o bounty do hacker irá incluir alguns átomos relativos, se houver.
 
 ### Específicação de Governança ###################################################
 
-The Cosmos Hub is operated by a distributed organization that requires a well-defined
-governance mechanism in order to coordinate various changes to the blockchain, 
-such as the variable parameters of the system, as well as software upgrades and 
-constitutional amendments.
+O Cosmos Hub é operado por uma organização distribuída que requer um mecanismo de governança bem definido para coordenar várias mudanças na blockchain, como parâmetros variáveis do sistema, bem como atualizações de software e emendas constitucionais.
 
-All validators are responsible for voting on all proposals.  Failing to vote on
-a proposal in a timely manner will result in the validator being deactivated 
-automatically for a period of time called the `AbsenteeismPenaltyPeriod`
-(DEFAULT 1 week).
+Todos os validadores são responsáveis por votar em todas as propostas. Não votar em uma proposta em tempo hábil resultará na desativação automática do validador por um período de tempo denominado `AbsenteeismPenaltyPeriod` (PADRÃO DE 1 semana).
 
-Delegators automatically inherit the vote of the delegated validator.  This vote
-may be overridden manually.  Unbonded atoms get no vote.
+Os delegados herdam automaticamente o voto do validador delegado. Este voto pode ser anulado manualmente. Os átomos não ligados obtêm nenhum voto.
 
-Each proposal requires a deposit of `MinimumProposalDeposit` tokens, which may
-be a combination of one or more tokens including atoms.  For each proposal, the
-voters may vote to take the deposit. If more than half of the voters choose to
-take the deposit (e.g. because the proposal was spam), the deposit goes to the
-reserve pool, except any atoms which are burned.
+Cada proposta requer um depósito de tokens de `MinimumProposalDeposit`, que pode ser uma combinação de um ou mais tokens incluindo átomos. Para cada proposta, os eleitores podem votar para receber o depósito. Se mais da metade dos eleitores optarem por receber o depósito (por exemplo, porque a proposta era spam), o depósito vai para a pool reserva, exceto os átomos que são queimados.
 
 Para cada proposta, os eleitores podem votar nas seguintes opições:
 
@@ -780,13 +746,7 @@ Para cada proposta, os eleitores podem votar nas seguintes opições:
 * Nunca
 * Abstenção
 
-A strict majority of Yea or YeaWithForce votes (or Nay or NayWithForce votes) is
-required for the proposal to be decided as accepted (or decided as failed), but
-1/3+ can veto the majority decision by voting "with force".  When a strict
-majority is vetoed, everyone gets punished by losing `VetoPenaltyFeeBlocks`
-(DEFAULT 1 day's worth of blocks) worth of fees (except taxes which will not be
-affected), and the party that vetoed the majority decision will be additionally
-punished by losing `VetoPenaltyAtoms` (DEFAULT 0.1%) of its atoms.
+É necessário uma maioria estrita de votos Yea(Sim) ou YeaWithForce(Com certeza) (ou votos Nay(Não) ou NayWithForce(Nunca)) para que a proposta seja decidida como aceita (ou decidida como falha), mas 1/3+ pode vetar a decisão da maioria votando "Com certeza". Quando uma maioria estrita é vetada, todos são punidos com a perda de `VetoPenaltyFeeBlocks`(PADRÃO DE no valor de um dia de blocos) de taxas (exceto os impostos que não serão afetados), e a parte que vetou a decisão da maioria será adicionalmente punida com a perda de `VetoPenaltyAtoms` (PADRÃO DE 0.1%) de seus átomos.
 
 ### Parâmetro de Mudança de Proposta
 
