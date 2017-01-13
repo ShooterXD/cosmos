@@ -750,110 +750,43 @@ Para cada proposta, os eleitores podem votar nas seguintes opições:
 
 ### Parâmetro de Mudança de Proposta
 
-Any of the parameters defined here can be changed with the acceptance of a
-`ParameterChangeProposal`.
+Qualquer um dos parâmetros aqui definidos pode ser alterado com a aceitação de um `ParameterChangeProposal`.
 
 ### Texto da Proposta
 
-All other proposals, such as a proposal to upgrade the protocol, will be
-coordinated via the generic `TextProposal`.
+Todas as outras propostas, como uma proposta de atualização do protocolo, serão coordenadas através do genérico `TextProposal`.
 
 ## Roteiro #####################################################################
 
-See [the Plan](https://github.com/cosmos/cosmos/blob/master/PLAN.md).
+Veja [o Plano Cosmos](https://github.com/cosmos/cosmos/blob/master/PLAN.md).
 
-## Related Work ################################################################
+## Trabalho Relacionado ################################################################
 
-There have been many innovations in blockchain consensus and scalability in the
-past couple of years.  This section provides a brief survey of a select number
-of important ones.
+Houve muitas inovações no consenso da blockchain e na escalabilidade nos últimos dois anos. Esta seção fornece um breve levantamento de um seleto número das mais importantes.
 
-### Consensus Systems
+### Sistemas de Consenso
 
 #### Classic Byzantine Fault Tolerance
 
-Consensus in the presence of malicious participants is a problem dating back to
-the early 1980s, when Leslie Lamport coined the phrase "Byzantine fault" to refer
-to arbitrary process behavior that deviates from the intended behavior, in
-contrast to a "crash fault", wherein a process simply crashes. Early solutions
-were discovered for synchronous networks where there is an upper bound on
-message latency, though pratical use was limited to highly controlled
-environments such as airplane controllers and datacenters synchronized via
-atomic clocks.  It was not until the late 90s that Practical Byzantine Fault
-Tolerance (PBFT) [\[11\]][11] was introduced as an efficient partially
-synchronous consensus algorithm able to tolerate up to ⅓ of processes behaving
-arbitrarily.  PBFT became the standard algorithm, spawning many variations,
-including most recently one created by IBM as part of their contribution to Hyperledger.
+Consenso na presença de participantes maliciosos é um problema que remonta ao início dos anos 1980, quando Leslie Lamport cunhou a frase "falha bizantina" para se referir ao comportamento do processo arbitrário que se desvia do comportamento pretendido, que contraste com uma "falha acidental", em que um processo simplesmente falha. Soluções iniciais foram descobertas para redes síncronas onde há um limite superior na latência da mensagem, embora o uso prático fosse limitado a ambientes altamente controlados, como controladores de avião e datacenters sincronizados via relógios atômicos. Não foi até o final dos anos 90 que a Practical Byzantine Fault Tolerance (PBFT) foi introduzida como um eficiente algoritmo de consenso parcialmente síncrono capaz de tolerar até ⅓ de processos comportando-se arbitrariamente. PBFT tornou-se o algoritmo padrão, gerando muitas variações, incluindo mais recentemente uma criada pela IBM como parte de sua contribuição para a Hyperledger.
 
-The main benefit of Tendermint consensus over PBFT is that Tendermint has an
-improved and simplified underlying structure, some of which is a result of
-embracing the blockchain paradigm.  Tendermint blocks must commit in order,
-which obviates the complexity and communication overhead associated with PBFT's
-view-changes.  In Cosmos and many cryptocurrencies, there is no need to allow
-for block <em>N+i</em> where <em>i >= 1</em> to commit, when block <em>N</em>
-itself hasn't yet committed. If bandwidth is the reason why block <em>N</em>
-hasn't committed in a Cosmos zone, then it doesn't help to use bandwidth sharing
-votes for blocks <em>N+i</em>. If a network partition or offline nodes is the
-reason why block <em>N</em> hasn't committed, then <em>N+i</em> won't commit
-anyway.
+O principal benefício do consenso Tendermint sobre PBFT é que o Tendermint tem uma estrutura subjacente melhorada e simplificada, um dos quais é um resultado de adotar o paradigma blockchain. Blocos Tendermint devem confirmar em ordem, o que evita a complexidade e sobrecarga de comunicação associada a alteração de visão do PBFT's. No Cosmos e muitas outras criptomoedas, não há necessidade de permitir o bloco <em>N+i</em> onde <em>i >= 1</em> se confirmar, quando o próprio bloco <em>N</em> ainda não se confirmou. Se a largura de banda é a razão pela qual o bloco <em>N</em> não se confirmou em uma zona do Cosmos, então isso não ajuda a usar os votos de compartilhamento de largura de banda para blocos <em>N+i</em>. Se uma partição de rede ou nós offline for a razão pela qual o bloco <em>N</em> não foi confirmado, <em>N+i</em> não se comprometerá de qualquer maneira. 
 
-In addition, the batching of transactions into blocks allows for regular
-Merkle-hashing of the application state, rather than periodic digests as with
-PBFT's checkpointing scheme.  This allows for faster provable transaction
-commits for light-clients and faster inter-blockchain communication.
+Além disso, o lote de transações em blocos permite que o Merkle-hashing regule o estado da aplicação, ao invés de resumos periódicos com esquemas de pontos de verificação como PBFT faz. Isso permite confirmações de transações mais rápidas para clientes leves e uma comunicação mais rápida entre a blockchain.
 
-Tendermint Core also includes many optimizations and features that go above and
-beyond what is specified in PBFT.  For example, the blocks proposed by
-validators are split into parts, Merkle-ized, and gossipped in such a way that
-improves broadcasting performance (see LibSwift [\[19\]][19] for inspiration).
-Also, Tendermint Core doesn't make any assumption about point-to-point
-connectivity, and functions for as long as the P2P network is weakly connected.
+Tendermint Core também inclui muitas otimizações e recursos que vão acima e além do que é especificado no PBFT. Por exemplo, os blocos propostos pelos validadores são divididos em partes, Merkleized e inútilizados de tal forma que melhora o desempenho da transmissão (ver LibSwift [\[19\]][19] para inspiração). Além disso, Tendermint Core não faz qualquer suposição sobre a conectividade ponto-a-ponto, e funciona durante o tempo que a rede P2P está fracamente conectada.
 
-#### BitShares delegated stake
+#### Participação delegada do BitShares
 
-While not the first to deploy proof-of-stake (PoS), BitShares [\[12\]][12]
-contributed considerably to research and adoption of PoS blockchains,
-particularly those known as "delegated" PoS.  In BitShares, stake holders elect
-"witnesses", responsible for ordering and committing transactions, and
-"delegates", responsible for coordinating software updates and parameter
-changes.  Though BitShares achieves high performance (100k tx/s, 1s latency) in
-ideal conditions, it is subject to double spend attacks by malicious witnesses
-which fork the blockchain without suffering an explicit economic punishment --
-it suffers from the "nothing-at-stake" problem. BitShares attempts to mitigate
-the problem by allowing transactions to refer to recent block-hashes.
-Additionally, stakeholders can remove or replace misbehaving witnesses on a
-daily basis, though this does nothing to explicitly punish successful 
-double-spend attacks.
+Apesar de não serem os primeiros a implementar a prova-de-participação (Proof-of-Stake - PoS), o BitShares [\[12\]][12] contribuiu consideravelmente para a pesquisa e adoção das blockchains que usam o PoS, particularmente aqueles conhecidos como PoS "delegados". No BitShares, as partes interessadas elegem "testemunhas", responsáveis por ordenar e confirmar transações e "delegados", responsáveis pela coordenação de atualizações de software e alterações de parâmetros. Embora o BitShares atinja alto desempenho (100k tx/s, 1s de latência) em condições ideais, ele está sujeito a ataques de duplo gasto por testemunhas maliciosas que "forkem" a blockchain sem sofrer uma punição econômica explícita - ele sofre do problema "nada a perder". O BitShares tenta suavizar o problema permitindo que as transações se refiram a blocos-hashes recentes. Além disso, as partes interessadas podem remover ou substituir testemunhas de má conduta diariamente, embora isso não faça nada para punir explicitamente os ataques bem sucedidos de duplo gasto.
 
 #### Stellar
 
-Building on an approach pioneered by Ripple, Stellar [\[13\]][13] refined a
-model of Federated Byzantine Agreement wherein the processes participating in
-consensus do not constitute a fixed and globally known set.  Rather, each
-process node curates one or more "quorum slices", each constituting a set of
-trusted processes. A "quorum" in Stellar is defined to be a set of nodes that
-contain at least one quorum slice for each node in the set, such that agreement 
-can be reached.
+Baseando-se em uma abordagem pioneira da Ripple, a Stellar [\[13\]][13]  refinou um modelo do Federated Byzantine Agreement em que os processos que participam do consenso não constituem um conjunto fixo e globalmente conhecido. Em vez disso, cada nó de processo codifica uma ou mais "fatias de quórum", cada uma constituindo um conjunto de processos confiáveis. Um "quórum" na Stellar é definido como um conjunto de nós que contêm pelo menos uma fatia de quórum para cada nó no conjunto, de modo que o acordo possa ser alcançado.
 
-The security of the Stellar mechanism relies on the assumption that the
-intersection of *any* two quorums is non-empty, while the availability of a node
-requires at least one of its quorum slices to consist entirely of correct nodes,
-creating a trade-off between using large or small quorum-slices that may be
-difficult to balance without imposing significant assumptions about trust.
-Ultimately, nodes must somehow choose adequate quorum slices for there to be
-sufficient fault-tolerance (or any "intact nodes" at all, of which much of the
-results of the paper depend on), and the only provided strategy for ensuring
-such a configuration is heirarchical and similar to the Border Gateway Protocol
-(BGP), used by top-tier ISPs on the internet to establish global routing tables,
-and by that used by browsers to manage TLS certificates; both notorious for
-their insecurity.
+A segurança do mecanismo Stellar baseia-se no pressuposto de que a intersecção de *qualquer* dois quóruns é não-vazia, enquanto a disponibilidade de um nó requer pelo menos uma das suas fatias de quórum para consistir inteiramente de nós corretos, criando um troca externa entre o uso de grandes ou pequenas fatias-quórum que podem ser difíceis de equilíbrar sem impor pressupostos significativos sobre a confiança. Em última análise, os nós precisam, de alguma forma, escolher fatias de quórum adequadas para que haja tolerância suficiente a falhas (ou qualquer "nó intacto" em geral, do qual muitos dos resultados do trabalho dependem) e a única estratégia fornecida para garantir tal configuração é hierárquica e similar ao Border Gateway Protocol (BGP), usado por ISPs de primeira linha na internet para estabelecer tabelas de roteamento globais e usado pelos navegadores para gerenciar certificados TLS; Ambos notórios por sua insegurança.
 
-The criticism in the Stellar paper of the Tendermint-based proof-of-stake
-systems is mitigated by the token strategy described here, wherein a new type of
-token called the _atom_ is issued that represent claims to future portions of
-fees and rewards. The advantage of Tendermint-based proof-of-stake, then, is its
-relative simplicity, while still providing sufficient and provable security
-guarantees.
+A crítica sobre papel da Stellar nos sistemas PoS baseados em Tendermint é atenuada pela estratégia de token descrita aqui, em que um novo tipo de token chamado _atom_ é emitido para representar reivindicações para futuras porções de taxas e recompensas. A vantagem do PoS baseado em Tendermint, portanto, é a sua relativa simplicidade, ao mesmo tempo que oferece garantias de segurança suficientes e prováveis.
 
 #### BitcoinNG
 
