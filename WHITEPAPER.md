@@ -65,8 +65,7 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
     * [Prevenção de Ataques de Longo Alcance](#prevenção-de-ataques-de-longo-alcance)
     * [Superando Forks e Ataques de Censura](#superando-forks-e-ataques-de-censura)
     * [Especificação TMSP](#especificação-tmsp)
-    * [IBC Packet Delivery
-    Acknowledgement](#ibc-packet-delivery-acknowledgement)
+    * [Reconhecimento de entrega de pacotes IBC](#reconhecimento-de-entrega-de-pacotes-ibc)
     * [Merkle Tree &amp; Proof
     Specification](#merkle-tree--proof-specification)
     * [Transaction Types](#transaction-types)
@@ -906,107 +905,98 @@ Pedidos/respostas TMSP são simples mensagens Protobuf. Confira o [arquivo do es
 
 ##### AppendTx
   * __Arguments__:
-    * `Data ([]byte)`: The request transaction bytes
+    * `Data ([]byte)`: Os bytes de transação solicitada
   * __Returns__:
-    * `Code (uint32)`: Response code
-    * `Data ([]byte)`: Result bytes, if any
-    * `Log (string)`: Debug or error message
+    * `Code (uint32)`: Código de resposta
+    * `Data ([]byte)`: Bytes de resultado, se houver
+    * `Log (string)`: Debug ou mensagem de erro
   * __Usage__:<br/>
-    Append and run a transaction.  If the transaction is valid, returns
+    Acrescentar e executar uma transação. Se a transação for válida,
 CodeType.OK
 
 ##### CheckTx
   * __Arguments__:
-    * `Data ([]byte)`: The request transaction bytes
+    * `Data ([]byte)`: Os bytes de transação solicitados
   * __Returns__:
-    * `Code (uint32)`: Response code
-    * `Data ([]byte)`: Result bytes, if any
-    * `Log (string)`: Debug or error message
+    * `Code (uint32)`: Código de resposta
+    * `Data ([]byte)`: Bytes de resultado, se houver
+    * `Log (string)`: Debug ou mensagem de erro
   * __Usage__:<br/>
-    Validate a transaction.  This message should not mutate the state.
-    Transactions are first run through CheckTx before broadcast to peers in the
-mempool layer.
-    You can make CheckTx semi-stateful and clear the state upon `Commit` or
+    Validar uma transação. Esta mensagem não deve mutar o estado.
+    As transações são primeiro executadas através do CheckTx antes da transmissão para os pares na camada mempool.
+    Você pode fazer o CheckTx semi-stateful e limpar o estado após `Commit` ou
 `BeginBlock`,
-    to allow for dependent sequences of transactions in the same block.
+    para permitir sequências dependentes de transações no mesmo bloco.
 
 ##### Commit
   * __Returns__:
-    * `Data ([]byte)`: The Merkle root hash
-    * `Log (string)`: Debug or error message
+    * `Data ([]byte)`: O hash Merkle raiz
+    * `Log (string)`: Debug ou erro de mensagem
   * __Usage__:<br/>
-    Return a Merkle root hash of the application state.
+    Retorna um hash Merkle raiz do estado da aplicação.
 
 ##### Query
   * __Arguments__:
-    * `Data ([]byte)`: The query request bytes
+    * `Data ([]byte)`: Os bytes de solicitação consultada
   * __Returns__:
-    * `Code (uint32)`: Response code
-    * `Data ([]byte)`: The query response bytes
-    * `Log (string)`: Debug or error message
+    * `Code (uint32)`: Código de resposta
+    * `Data ([]byte)`: Os bytes de resposta consultada
+    * `Log (string)`: Debug ou erro de mensagem
 
 ##### Flush
   * __Usage__:<br/>
-    Flush the response queue.  Applications that implement `types.Application`
-need not implement this message -- it's handled by the project.
+    Limpar a fila de resposta. Aplicações que implementam `types.Application`
+não precisa implementar esta mensagem - é tratada pelo projeto.
 
 ##### Info
   * __Returns__:
-    * `Data ([]byte)`: The info bytes
+    * `Data ([]byte)`: Os bytes de informação
   * __Usage__:<br/>
-    Return information about the application state.  Application specific.
+    Retorna informações sobre o estado da aplicação. Aplicação específicão.
 
 ##### SetOption
   * __Arguments__:
-    * `Key (string)`: Key to set
-    * `Value (string)`: Value to set for key
+    * `Key (string)`: Chave para definir
+    * `Value (string)`: Valor a definir para a chave
   * __Returns__:
-    * `Log (string)`: Debug or error message
+    * `Log (string)`: Debug ou mensagem de erro
   * __Usage__:<br/>
-    Set application options.  E.g. Key="mode", Value="mempool" for a mempool
-connection, or Key="mode", Value="consensus" for a consensus connection.
-    Other options are application specific.
+    Define as opções do aplicativo.  Exemplo Key="mode", Value="mempool" para uma conexão mempool
+, ou Key="mode", Value="consensus" para uma conexão de consenso.
+    Outras opções são específicas da aplicação.
 
 ##### InitChain
   * __Arguments__:
-    * `Validators ([]Validator)`: Initial genesis-validators
+    * `Validators ([]Validator)`: validadores de genesis iniciais
   * __Usage__:<br/>
-    Called once upon genesis
+    Chamado uma vez na genesis
 
 ##### BeginBlock
   * __Arguments__:
-    * `Height (uint64)`: The block height that is starting
+    * `Height (uint64)`: A altura do bloco que está começando
   * __Usage__:<br/>
-    Signals the beginning of a new block. Called prior to any AppendTxs.
+    Sinaliza o início de um novo bloco. Chamado antes de qualquer AppendTxs.
 
 ##### EndBlock
   * __Arguments__:
-    * `Height (uint64)`: The block height that ended
+    * `Height (uint64)`: A altura do bloco que terminou
   * __Returns__:
-    * `Validators ([]Validator)`: Changed validators with new voting powers (0
-      to remove)
+    * `Validators ([]Validator)`: Mudança de validadores com novos poderes de voto (0
+      para remover)
   * __Usage__:<br/>
-    Signals the end of a block.  Called prior to each Commit after all
-transactions
+    Sinaliza o fim de um bloco. Chamado antes de cada Commit após todas as
+transações
 
-See [the TMSP repository](https://github.com/tendermint/tmsp#message-types) for more details.
+Veja [o repositório TMSP](https://github.com/tendermint/tmsp#message-types) for more details.
 
-### IBC Packet Delivery Acknowledgement
+### Reconhecimento de entrega de pacotes IBC
 
-There are several reasons why a sender may want the acknowledgement of delivery
-of a packet by the receiving chain.  For example, the sender may not know the
-status of the destination chain, if it is expected to be faulty.  Or, the sender
-may want to impose a timeout on the packet (with the `MaxHeight` packet field),
-while any destination chain may suffer from a denial-of-service attack with a
-sudden spike in the number of incoming packets.
+Há várias razões pelas quais um remetente pode querer o reconhecimento da entrega de um pacote pela cadeia de recebimento. Por exemplo, o remetente pode não saber o status da cadeia de destino, se for esperado que esteja com defeito. Ou, o remetente pode querer impor um tempo limite no pacote (com o campo `MaxHeight`), enquanto qualquer cadeia de destino pode sofrer de um ataque de negação de serviço com um aumento repentino no número de pacotes de entrada.
 
-In these cases, the sender can require delivery acknowledgement by setting the
-initial packet status to `AckPending`.  Then, it is the receiving chain's
-responsibility to confirm delivery by including an abbreviated `IBCPacket` in the
-app Merkle hash.
+Nesses casos, o remetente pode exigir confirmação de entrega configurando o status do pacote inicial como `AckPending`. Em seguida, é a responsabilidade da cadeia receptora confirmar a entrega, incluindo uma abreviada `IBCPacket` no app Merkle hash.
 
-![Figure of Zone1, Zone2, and Hub IBC with
-acknowledgement](https://raw.githubusercontent.com/gnuclear/atom-whitepaper/master/msc/ibc_with_ack.png)
+![Figura da Zone1, Zone2, e Hub IBC com
+reconhecimento](https://raw.githubusercontent.com/gnuclear/atom-whitepaper/master/msc/ibc_with_ack.png)
 
 First, an `IBCBlockCommit` and `IBCPacketTx` are posted on "Hub" that proves
 the existence of an `IBCPacket` on "Zone1".  Say that `IBCPacketTx` has the
