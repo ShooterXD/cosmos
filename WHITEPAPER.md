@@ -66,8 +66,7 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
     * [Superando Forks e Ataques de Censura](#superando-forks-e-ataques-de-censura)
     * [Especificação TMSP](#especificação-tmsp)
     * [Reconhecimento de entrega de pacotes IBC](#reconhecimento-de-entrega-de-pacotes-ibc)
-    * [Merkle Tree &amp; Proof
-    Specification](#merkle-tree--proof-specification)
+    * [Árvore Merkle &amp; Especificação de Prova](#árvore-merkle--especificação-de-prova)
     * [Transaction Types](#transaction-types)
       * [IBCBlockCommitTx](#ibcblockcommittx)
       * [IBCPacketTx](#ibcpackettx)
@@ -998,9 +997,7 @@ Nesses casos, o remetente pode exigir confirmação de entrega configurando o st
 ![Figura da Zone1, Zone2, e Hub IBC com
 reconhecimento](https://raw.githubusercontent.com/gnuclear/atom-whitepaper/master/msc/ibc_with_ack.png)
 
-First, an `IBCBlockCommit` and `IBCPacketTx` are posted on "Hub" that proves
-the existence of an `IBCPacket` on "Zone1".  Say that `IBCPacketTx` has the
-following value:
+Primeiro, um `IBCBlockCommit` e` IBCPacketTx` são postados no "Hub" que prova a existência de um `IBCPacket` na "Zone1". Digamos que `IBCPacketTx` tem o seguinte valor:
 
 - `FromChainID`: "Zone1"
 - `FromBlockHeight`: 100 (say)
@@ -1010,13 +1007,11 @@ following value:
     - `DstChainID`: "Zone2"
     - `Number`: 200 (say)
     - `Status`: `AckPending`
-    - `Type`: "coin"
-    - `MaxHeight`: 350 (say "Hub" is currently at height 300)
-  - `Payload`: &lt;The bytes of a "coin" payload&gt;
+    - `Type`: "moeda"
+    - `MaxHeight`: 350 (Dizer que "Hub" está atualmente na altura 300)
+  - `Payload`: &lt;Os bytes de uma carga paga de "moeda"&gt;
 
-Next, an `IBCBlockCommit` and `IBCPacketTx` are posted on "Zone2" that proves
-the existence of an `IBCPacket` on "Hub".  Say that `IBCPacketTx` has the
-following value:
+Em seguida, um `IBCBlockCommit` e `IBCPacketTx` são publicados na "Zone2" que comprova a existência de um `IBCPacket` em "Hub". Digamos que `IBCPacketTx` tem o seguinte valor:
 
 - `FromChainID`: "Hub"
 - `FromBlockHeight`: 300
@@ -1026,14 +1021,11 @@ following value:
     - `DstChainID`: "Zone2"
     - `Number`: 200
     - `Status`: `AckPending`
-    - `Type`: "coin"
+    - `Type`: "moeda"
     - `MaxHeight`: 350
-  - `Payload`: &lt;The same bytes of a "coin" payload&gt;
+  - `Payload`: &lt;Os mesmos bytes de uma carga paga de "moeda"&gt;
 
-Next, "Zone2" must include in its app-hash an abbreviated packet that shows the
-new status of `AckSent`.  An `IBCBlockCommit` and `IBCPacketTx` are posted back
-on "Hub" that proves the existence of an abbreviated `IBCPacket` on
-"Zone2".  Say that `IBCPacketTx` has the following value:
+Em seguida, "Zone2" deve incluir em seu app-hash um pacote abreviado que mostra o novo status de `AckSent`. Um `IBCBlockCommit` e `IBCPacketTx` são colocados de volta no "Hub" que comprova a existência de um `IBCPacket` abreviado na "Zone2". Digamos que `IBCPacketTx` tem o seguinte valor:
 
 - `FromChainID`: "Zone2"
 - `FromBlockHeight`: 400 (say)
@@ -1043,13 +1035,11 @@ on "Hub" that proves the existence of an abbreviated `IBCPacket` on
     - `DstChainID`: "Zone2"
     - `Number`: 200
     - `Status`: `AckSent`
-    - `Type`: "coin"
+    - `Type`: "moeda"
     - `MaxHeight`: 350
-  - `PayloadHash`: &lt;The hash bytes of the same "coin" payload&gt;
+  - `PayloadHash`: &lt;Os bytes de hash da mesma carga paga de "moeda"&gt;
 
-Finally, "Hub" must update the status of the packet from `AckPending` to
-`AckReceived`.  Evidence of this new finalized status should go back to
-"Zone2".  Say that `IBCPacketTx` has the following value:
+Finalmente, "Hub" deve atualizar o status do pacote de `AckPending` para`AckReceived`. A evidência desse novo status finalizado deve voltar a "Zone2". Digamos que `IBCPacketTx` tem o seguinte valor:
 
 - `FromChainID`: "Hub"
 - `FromBlockHeight`: 301
@@ -1059,20 +1049,16 @@ Finally, "Hub" must update the status of the packet from `AckPending` to
     - `DstChainID`: "Zone2"
     - `Number`: 200
     - `Status`: `AckReceived`
-    - `Type`: "coin"
+    - `Type`: "moeda"
     - `MaxHeight`: 350
-  - `PayloadHash`: &lt;The hash bytes of the same "coin" payload&gt;
+  - `PayloadHash`: &lt;Os bytes de hash da mesma carga paga de "moeda"&gt;
 
-Meanwhile, "Zone1" may optimistically assume successful delivery of a "coin"
-packet unless evidence to the contrary is proven on "Hub".  In the example
-above, if "Hub" had not received an `AckSent` status from "Zone2" by block
-350, it would have set the status automatically to `Timeout`.  This evidence of
-a timeout can get posted back on "Zone1", and any tokens can be returned.
+Enquanto isso, "Zone1" pode assumir de maneira otimista a entrega bem-sucedida de um pacote de "moeda", a menos que provas em contrário sejam comprovadas em "Hub". No exemplo acima, se "Hub" não tivesse recebido um status `AckSent` de "Zone2" pelo bloco 350, ele teria definido o status automaticamente para `Timeout`. Essa evidência de um tempo limite pode ser postada novamente na "Zone1", e quaisquer tokens podem ser retornados.
 
-![Figure of Zone1, Zone2, and Hub IBC with acknowledgement and
+![Figura da Zone1, Zone2, e Hub IBC com reconhecimento e 
 timeout](https://raw.githubusercontent.com/gnuclear/atom-whitepaper/master/msc/ibc_with_ack_timeout.png)
 
-### Merkle Tree & Proof Specification
+### Árvore Merkle & Especificação de Prova
 
 There are two types of Merkle trees supported in the Tendermint/Cosmos
 ecosystem: The Simple Tree, and the IAVL+ Tree.
