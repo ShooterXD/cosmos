@@ -66,7 +66,7 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
     * [Superando Forks e Ataques de Censura](#superando-forks-e-ataques-de-censura)
     * [Especificação TMSP](#especificação-tmsp)
     * [Reconhecimento de entrega de pacotes IBC](#reconhecimento-de-entrega-de-pacotes-ibc)
-    * [Árvore Merkle &amp; Especificação de Prova](#árvore-merkle-&-especificação-de-prova)
+    * [Árvore Merkle &amp; Especificação de Prova](#árvore-merkle--especificação-de-prova)
     * [Tipos de Transação](#tipos-de-transação)
       * [IBCBlockCommitTx](#ibcblockcommittx)
       * [IBCPacketTx](#ibcpackettx)
