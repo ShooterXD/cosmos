@@ -66,11 +66,11 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
     * [Superando Forks e Ataques de Censura](#superando-forks-e-ataques-de-censura)
     * [Especificação TMSP](#especificação-tmsp)
     * [Reconhecimento de entrega de pacotes IBC](#reconhecimento-de-entrega-de-pacotes-ibc)
-    * [Árvore Merkle &amp; Especificação de Prova](#árvore-merkle--especificação-de-prova)
+    * [Árvore Merkle &amp; Especificação de Prova](#árvore-merkle-&-especificação-de-prova)
     * [Tipos de Transação](#tipos-de-transação)
       * [IBCBlockCommitTx](#ibcblockcommittx)
       * [IBCPacketTx](#ibcpackettx)
-  * [Acknowledgements](#acknowledgements)
+  * [Agradecimentos](#agradecimentos)
   * [Citations](#citations)
 
 ## Introdução ################################################################
@@ -1095,91 +1095,67 @@ Iremos apoiar outras árvores Merkle eficientes, como Patricia Trie, da Ethereum
 
 ### Tipos de Transação
 
-In the canonical implementation, transactions are streamed to the Cosmos hub
-application via the TMSP interface.
+Na implementação canônica, as transações são transmitidas para o aplicativo Cosmos hub através da interface TMSP.
 
-The Cosmos Hub will accept a number of primary transaction types, including
-`SendTx`, `BondTx`, `UnbondTx`, `ReportHackTx`, `SlashTx`, `BurnAtomTx`,
-`ProposalCreateTx`, and `ProposalVoteTx`, which are fairly self-explanatory and
-will be documented in a future revision of this paper.  Here we document the two
-primary transaction types for IBC: `IBCBlockCommitTx` and `IBCPacketTx`.
+O Cosmos Hub aceitará uma série de tipos de transações primárias, incluindo `SendTx`, `BondTx`, `UnbondTx`, `ReportHackTx`, `SlashTx`, `BurnAtomTx`, `ProposalCreateTx` e `ProposalVoteTx`, que são relativamente auto-explicativas e será documentado em uma futura revisão deste artigo. Aqui documentamos os dois principais tipos de transação para IBC: `IBCBlockCommitTx` e `IBCPacketTx`.
 
 #### IBCBlockCommitTx
 
-An `IBCBlockCommitTx` transaction is composed of:
+Uma transação `IBCBlockCommitTx` é composta de:
 
-- `ChainID (string)`: The ID of the blockchain
-- `BlockHash ([]byte)`: The block-hash bytes, the Merkle root which includes the
-  app-hash
-- `BlockPartsHeader (PartSetHeader)`: The block part-set header bytes, only
-  needed to verify vote signatures
-- `BlockHeight (int)`: The height of the commit
-- `BlockRound (int)`: The round of the commit
-- `Commit ([]Vote)`: The +⅔ Tendermint `Precommit` votes that comprise a block
-  commit
-- `ValidatorsHash ([]byte)`: A Merkle-tree root hash of the new validator set
-- `ValidatorsHashProof (SimpleProof)`: A SimpleTree Merkle-proof for proving the
-  `ValidatorsHash` against the `BlockHash`
-- `AppHash ([]byte)`: A IAVLTree Merkle-tree root hash of the application state
-- `AppHashProof (SimpleProof)`: A SimpleTree Merkle-proof for proving the
-  `AppHash` against the `BlockHash`
+- `ChainID (string)`: O ID da blockchain
+- `BlockHash ([]byte)`: Os bytes de hash de bloco, a raiz Merkle que inclui o app-hash
+- `BlockPartsHeader (PartSetHeader)`: Os bytes de cabeçalho do conjunto de blocos, apenas necessários para verificar assinaturas de voto
+- `BlockHeight (int)`: A altura do commit
+- `BlockRound (int)`: A rodada do commit
+- `Commit ([]Vote)`: O +⅔ Tendermint `Precommit` de votos que compõem um bloco
+- `ValidatorsHash ([]byte)`: O hash da raiz da árvore-Merkle do novo conjunto de validadores
+- `ValidatorsHashProof (SimpleProof)`: Uma ÁrvoreSimples da prova-Merkle para provar o
+  `ValidatorsHash` contra o `BlockHash`
+- `AppHash ([]byte)`: Um hash da raiz da árvore-Merkle da Árvore IAVL do estado de aplicação
+- `AppHashProof (SimpleProof)`: Uma ÁrvoreSimples da prova-Merkle para provar o
+  `AppHash` contra o `BlockHash`
 
 #### IBCPacketTx
 
-An `IBCPacket` is composed of:
+Um `IBCPacket` é composto de:
 
-- `Header (IBCPacketHeader)`: The packet header
-- `Payload ([]byte)`: The bytes of the packet payload. _Optional_
-- `PayloadHash ([]byte)`: The hash for the bytes of the packet. _Optional_
+- `Header (IBCPacketHeader)`: O cabeçalho do pacote
+- `Payload ([]byte)`: Os bytes da carga paga do pacote. _Optional_
+- `PayloadHash ([]byte)`: O hash para os bytes do pacote. _Optional_
 
-Either one of `Payload` or `PayloadHash` must be present.  The hash of an
-`IBCPacket` is a simple Merkle root of the two items, `Header` and `Payload`.
-An `IBCPacket` without the full payload is called an _abbreviated packet_.
+Qualquer um dos `Payload` ou `PayloadHash` deve estar presente. O hash de um `IBCPacket` é uma raiz Merkle simples dos dois itens, `Header` e `Payload`. Um `IBCPacket` sem a carga completa é chamado de _abbreviated packet_.
 
-An `IBCPacketHeader` is composed of:
+Um `IBCPacketHeader` é composto de:
 
-- `SrcChainID (string)`: The source blockchain ID
-- `DstChainID (string)`: The destination blockchain ID
-- `Number (int)`: A unique number for all packets
-- `Status (enum)`: Can be one of `AckPending`, `AckSent`, `AckReceived`,
-  `NoAck`, or `Timeout`
-- `Type (string)`: The types are application-dependent.  Cosmos reserves the
-  "coin" packet type
-- `MaxHeight (int)`: If status is not `NoAckWanted` or `AckReceived` by this
-  height, status becomes `Timeout`. _Optional_
+- `SrcChainID (string)`: O ID da blockchain fonte
+- `DstChainID (string)`: O ID da blockchain destino
+- `Number (int)`: Um número exclusivo para todos os pacotes
+- `Status (enum)`: Pode ser um `AckPending`, `AckSent`, `AckReceived`,
+  `NoAck`, ou `Timeout`
+- `Type (string)`: Os tipos são dependentes da aplicação. Cosmos reserva-se ao tipo de pacote "moeda"
+- `MaxHeight (int)`: Se status não for `NoAckWanted` ou `AckReceived` por essa altura, o status se tornará `Timeout`. _Opcional_
 
-An `IBCPacketTx` transaction is composed of:
+Uma transação `IBCPacketTx` é composta de:
 
-- `FromChainID (string)`: The ID of the blockchain which is providing this
-  packet; not necessarily the source
-- `FromBlockHeight (int)`: The blockchain height in which the following packet
-  is included (Merkle-ized) in the block-hash of the source chain
-- `Packet (IBCPacket)`: A packet of data, whose status may be one of
-  `AckPending`, `AckSent`, `AckReceived`, `NoAck`, or `Timeout`
-- `PacketProof (IAVLProof)`: A IAVLTree Merkle-proof for proving the packet's
-  hash against the `AppHash` of the source chain at given height
+- `FromChainID (string)`: O ID da blockchain que está fornecendo este pacote; Não necessariamente a fonte
+- `FromBlockHeight (int)`: A altura da blockchain na qual o seguinte pacote é incluído (Merkle-izado) no hash da blockchain de origem 
+- `Packet (IBCPacket)`: Um pacote de dados, cujo estado pode ser um 
+  `AckPending`, `AckSent`, `AckReceived`, `NoAck`, ou `Timeout`
+- `PacketProof (IAVLProof)`: Uma prova-Merkle da Árvore IAVL para para provar o hash do pacote contra o `AppHash' da cadeia de origem em determinada altura
 
-The sequence for sending a packet from "Zone1" to "Zone2" through the
-"Hub" is depicted in {Figure X}.  First, an `IBCPacketTx` proves to
-"Hub" that the packet is included in the app-state of "Zone1".  Then,
-another `IBCPacketTx` proves to "Zone2" that the packet is included in the
-app-state of "Hub".  During this procedure, the `IBCPacket` fields are
-identical: the `SrcChainID` is always "Zone1", and the `DstChainID` is always
-"Zone2".
+A seqüência para enviar um pacote da "Zone1" para a "Zone2" através do "Hub" é mostrada em {Figure X}. Primeiro, um `IBCPacketTx` prova ao "Hub" que o pacote está incluído no estado da aplicação de "Zone1". Em seguida, outro `IBCPacketTx` prova a "Zone2" que o pacote está incluído no estado da aplicação "Hub". Durante esse procedimento, os campos `IBCPacket` são idênticos: o `SrcChainID` é sempre "Zone1", e o `DstChainID` é sempre" Zone2 ".
 
-The `PacketProof` must have the correct Merkle-proof path, as follows:
+O `PacketProof` deve ter o caminho correto da prova-Merkle, da seguinte maneira:
 
 ```
 IBC/<SrcChainID>/<DstChainID>/<Number>
 
 ```
 
-When "Zone1" wants to send a packet to "Zone2" through "Hub", the
-`IBCPacket` data are identical whether the packet is Merkle-ized on "Zone1",
-the "Hub", or "Zone2".  The only mutable field is `Status` for tracking
-delivery, as shown below.
+Quando "Zone1" quer enviar um pacote para "Zone2" através do "Hub", os dados de `IBCPacket` são idênticos se o pacote é Merkle-izado em "Zone1", no "Hub" ou "Zone2". O único campo mutável é `Status` para acompanhar a entrega, conforme mostrado abaixo.
 
-## Acknowledgements ############################################################
+## Agradecimentos ############################################################
 
 We thank our friends and peers for assistance in conceptualizing, reviewing, and
 providing support for our work with Tendermint and Cosmos.
