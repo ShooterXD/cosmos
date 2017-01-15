@@ -706,88 +706,77 @@ inativo e todos os atoms e atoms delegados entram no estado de unbonding.
 
 ### Penalidades para Validadores
 
-There must be some penalty imposed on the validators for any intentional
-or unintentional deviation from the sanctioned protocol. Some evidence is
-immediately admissible, such as a double-sign at the same height and round, or a
-violation of "prevote-the-lock" (a rule of the Tendermint consensus protocol).
-Such evidence will result in the validator losing its good standing and its
-bonded atoms as well its proportionate share of tokens in the reserve pool --
-collectively called its "stake" -- will get slashed.
+Deve haver alguma penalidade imposta aos validadores por qualquer desvio intencional
+ou não intencional do protocolo sancionado. Algumas evidências são imediatamente admissíveis,
+como um double-sign na mesma altura e volta, ou uma violação de "prevote-the-lock"
+(uma regra do protocolo de consenso Tendermint). Tais evidências resultarão em que o 
+validador perca sua boa reputação e seus átomos ligados, bem como sua proporção de tokens 
+na pool reserva - coletivamente chamados de "stake" - serão cortados.
 
-Sometimes, validators will not be available, either due to regional network
-disruptions, power failure, or other reasons.  If, at any point in the past
-`ValidatorTimeoutWindow` blocks, a validator's commit vote is not included in
-the blockchain more than `ValidatorTimeoutMaxAbsent` times, that validator will
-become inactive, and lose `ValidatorTimeoutPenalty` (DEFAULT 1%) of its stake.
+Às vezes, os validadores não estarão disponíveis, devido a interrupções na rede regional,
+falha de energia ou outros motivos. Se, em qualquer ponto nos blocos `ValidatorTimeoutWindow`
+anteriores, o voto de validação de um validador não estiver incluído na cadeia de
+blocos mais do que `ValidatorTimeoutMaxAbsent` vezes, esse validador ficará inativo e
+perderá `ValidatorTimeoutPenalty` (PADRÃO DE 1%) de sua participação.
 
-Some "malicious" behavior does not produce obviously discernable evidence on the
-blockchain. In these cases, the validators can coordinate out of band to force
-the timeout of these malicious validators, if there is a supermajority
-consensus.
+Alguns comportamentos "maliciosos" não produzem provas obviamente discerníveis sobre
+a blockchain. Nesses casos, os validadores podem coordenar fora da banda para forçar
+o tempo limite desses validadores maliciosos, se houver um consenso majoritário.
 
-In situations where the Cosmos Hub halts due to a ⅓+ coalition of voting power
-going offline, or in situations where a ⅓+ coalition of voting power censor
-evidence of malicious behavior from entering the blockchain, the hub must
-recover with a hard-fork reorg-proposal.  (Link to "Forks and Censorship
-Attacks").
+Em situações em que o Cosmos Hub parar devido a uma coalizão de ⅓+ de poder de voto
+offline, ou em situações onde uma coalizão de ⅓+ de poder de voto censurar evidências de
+comportamento malicioso entrando na blockchain, o hub deve recuperar com um hard-fork
+de proposta reorganizacional. (Link to "Forks and Censorship Attacks").
 
 ### Taxas de Transação
 
-Cosmos Hub validators can accept any token type or combination of types as fees
-for processing a transaction.  Each validator can subjectively set whatever
-exchange rate it wants, and choose whatever transactions it wants, as long as
-the `BlockGasLimit` is not exceeded.  The collected fees, minus any taxes
-specified below, are redistributed to the bonded stakeholders in proportion to
-their bonded atoms, every `ValidatorPayoutPeriod` (DEFAULT 1 hour).
+Os validadores do Cosmos Hub podem aceitar qualquer tipo de token ou combinação
+de tipos como taxas para processar uma transação. Cada validador pode fixar subjetivamente a
+taxa de câmbio que quiser e escolher as transações que desejar, desde que o `BlockGasLimit`
+não seja excedido. As taxas cobradas, menos quaisquer impostos especificados abaixo,
+são redistribuídas aos stakeholders ligados em proporção aos seus átomos ligados, cada `ValidatorPayoutPeriod` (PADRÃO DE 1 hora).
 
-Of the collected transaction fees, `ReserveTax` (DEFAULT 2%) will go toward the
-reserve pool to increase the reserve pool and increase the security and value of
-the Cosmos network.  Also, a `CommonsTax` (DEFAULT 3%) will go toward the
-funding of common goods.  These funds will go to the `CustodianAddress` to be
-distributed in accordance with the decisions made by the governance system.
+Das taxas de transação cobradas, `ReserveTax` (PADRÃO DE 2%) irá para a pool reserva
+para aumentar a pool reserva e aumentar a segurança e o valor da rede Cosmos. Além disso, um
+`CommonsTax` (PADRÃO DE 3%) irá para o financiamento de bens comuns. Estes fundos vão para o
+`CustodianAddress` para ser distribuído de acordo com as decisões tomadas pelo sistema de governança.
 
-Atom holders who delegate their voting power to other validators pay a
-commission to the delegated validator.  The commission can be set by each
-validator.
+Os titulares de átomos que delegam o seu poder de voto a outros validadores pagam uma comissão
+ao validador delegado. A comissão pode ser definida por cada validador.
 
 ### Incentivando Hackers
 
-The security of the Cosmos Hub is a function of the security of the underlying
-validators and the choice of delegation by delegators.  In order to encourage
-the discovery and early reporting of found vulnerabilities, the Cosmos Hub
-encourages hackers to publish successful exploits via a `ReportHackTx`
-transaction that says, "This validator got hacked.  Please send
-bounty to this address".  Upon such an exploit, the validator and delegators
-will become inactive, `HackPunishmentRatio` (default 5%) of everyone's atoms
-will get slashed, and `HackRewardRatio` (default 5%) of everyone's atoms will
-get rewarded to the hacker's bounty address.  The validator must recover the
-remaining atoms by using their backup key.
+A segurança do Cosmos Hub é uma função da segurança dos validadores subjacentes e da escolha
+da delegação pelos delegados. A fim de incentivar a descoberta e notificação precoce de vulnerabilidades
+encontradas, o Cosmos Hub incentiva os hackers a publicar exploits bem sucedidos através de uma transação
+`ReportHackTx` que diz," Este validador foi hackeado. Por favor, envie recompensa para este endereço".
+Depois de tal exploração, o validador e os delegados ficarão inativos, `HackPunishmentRatio` (PADRÃO DE 5%)
+dos átomos de todos serão cortados, e` HackRewardRatio` (PADRÃO DE 5%) dos átomos de todos
+serão recompensado com o endereço de recompensa do hacker. O validador deve recuperar os átomos
+restantes usando sua chave de backup.
 
-In order to prevent this feature from being abused to transfer unvested atoms,
-the portion of vested vs unvested atoms of validators and delegators before and
-after the `ReportHackTx` will remain the same, and the hacker bounty will
-include some unvested atoms, if any.
+Para evitar que esse recurso seja abusado para transferir átomos não invadidos,
+a porção de átomos adquirido vs relativo de validadores e delegados antes e depois do `ReportHackTx`
+permanecerá o mesmo, e o bounty do hacker irá incluir alguns átomos relativos, se houver.
 
 ### Específicação de Governança ###################################################
 
-The Cosmos Hub is operated by a distributed organization that requires a well-defined
-governance mechanism in order to coordinate various changes to the blockchain, 
-such as the variable parameters of the system, as well as software upgrades and 
-constitutional amendments.
+O Cosmos Hub é operado por uma organização distribuída que requer um mecanismo de
+governança bem definido para coordenar várias mudanças na blockchain, como parâmetros 
+variáveis do sistema, bem como atualizações de software e emendas constitucionais.
 
-All validators are responsible for voting on all proposals.  Failing to vote on
-a proposal in a timely manner will result in the validator being deactivated 
-automatically for a period of time called the `AbsenteeismPenaltyPeriod`
-(DEFAULT 1 week).
+Todos os validadores são responsáveis por votar em todas as propostas. 
+Não votar em uma proposta em tempo hábil resultará na desativação automática do 
+validador por um período de tempo denominado `AbsenteeismPenaltyPeriod` (PADRÃO DE 1 semana).
 
-Delegators automatically inherit the vote of the delegated validator.  This vote
-may be overridden manually.  Unbonded atoms get no vote.
+Os delegados herdam automaticamente o voto do validador delegado. 
+Este voto pode ser anulado manualmente. Os átomos não ligados obtêm nenhum voto.
 
-Each proposal requires a deposit of `MinimumProposalDeposit` tokens, which may
-be a combination of one or more tokens including atoms.  For each proposal, the
-voters may vote to take the deposit. If more than half of the voters choose to
-take the deposit (e.g. because the proposal was spam), the deposit goes to the
-reserve pool, except any atoms which are burned.
+Cada proposta requer um depósito de tokens de `MinimumProposalDeposit`,
+que pode ser uma combinação de um ou mais tokens incluindo átomos. 
+Para cada proposta, os eleitores podem votar para receber o depósito.
+Se mais da metade dos eleitores optarem por receber o depósito (por exemplo, porque a proposta era spam),
+o depósito vai para a pool reserva, exceto os átomos que são queimados.
 
 Para cada proposta, os eleitores podem votar nas seguintes opições:
 
@@ -797,596 +786,528 @@ Para cada proposta, os eleitores podem votar nas seguintes opições:
 * Nunca
 * Abstenção
 
-A strict majority of Yea or YeaWithForce votes (or Nay or NayWithForce votes) is
-required for the proposal to be decided as accepted (or decided as failed), but
-1/3+ can veto the majority decision by voting "with force".  When a strict
-majority is vetoed, everyone gets punished by losing `VetoPenaltyFeeBlocks`
-(DEFAULT 1 day's worth of blocks) worth of fees (except taxes which will not be
-affected), and the party that vetoed the majority decision will be additionally
-punished by losing `VetoPenaltyAtoms` (DEFAULT 0.1%) of its atoms.
+É necessário uma maioria estrita de votos Yea(Sim) ou YeaWithForce(Com certeza) 
+(ou votos Nay(Não) ou NayWithForce(Nunca)) para que a proposta seja decidida como aceita 
+(ou decidida como falha), mas 1/3+ pode vetar a decisão da maioria votando "Com certeza". 
+Quando uma maioria estrita é vetada, todos são punidos com a perda de `VetoPenaltyFeeBlocks`
+(PADRÃO DE no valor de um dia de blocos) de taxas (exceto os impostos que não serão afetados), 
+e a parte que vetou a decisão da maioria será adicionalmente punida com a perda de `VetoPenaltyAtoms` 
+(PADRÃO DE 0.1%) de seus átomos.
 
 ### Parâmetro de Mudança de Proposta
 
-Any of the parameters defined here can be changed with the acceptance of a
-`ParameterChangeProposal`.
+Qualquer um dos parâmetros aqui definidos pode ser alterado com a aceitação 
+de um `ParameterChangeProposal`.
 
 ### Texto da Proposta
 
-All other proposals, such as a proposal to upgrade the protocol, will be
-coordinated via the generic `TextProposal`.
+Todas as outras propostas, como uma proposta de atualização do protocolo, serão coordenadas através do genérico `TextProposal`.
 
 ## Roteiro #####################################################################
 
-See [the Plan](https://github.com/cosmos/cosmos/blob/master/PLAN.md).
+Veja [o Plano Cosmos](https://github.com/cosmos/cosmos/blob/master/PLAN.md).
 
-## Related Work ################################################################
+## Trabalho Relacionado ################################################################
 
-There have been many innovations in blockchain consensus and scalability in the
-past couple of years.  This section provides a brief survey of a select number
-of important ones.
+Houve muitas inovações no consenso da blockchain e na escalabilidade nos últimos dois anos.
+Esta seção fornece um breve levantamento de um seleto número das mais importantes.
 
-### Consensus Systems
+### Sistemas de Consenso
 
 #### Classic Byzantine Fault Tolerance
 
-Consensus in the presence of malicious participants is a problem dating back to
-the early 1980s, when Leslie Lamport coined the phrase "Byzantine fault" to refer
-to arbitrary process behavior that deviates from the intended behavior, in
-contrast to a "crash fault", wherein a process simply crashes. Early solutions
-were discovered for synchronous networks where there is an upper bound on
-message latency, though pratical use was limited to highly controlled
-environments such as airplane controllers and datacenters synchronized via
-atomic clocks.  It was not until the late 90s that Practical Byzantine Fault
-Tolerance (PBFT) [\[11\]][11] was introduced as an efficient partially
-synchronous consensus algorithm able to tolerate up to ⅓ of processes behaving
-arbitrarily.  PBFT became the standard algorithm, spawning many variations,
-including most recently one created by IBM as part of their contribution to Hyperledger.
+Consenso na presença de participantes maliciosos é um problema que remonta ao início dos anos 1980, 
+quando Leslie Lamport cunhou a frase "falha bizantina" para se referir ao comportamento do processo
+arbitrário que se desvia do comportamento pretendido, que contraste com uma "falha acidental",
+em que um processo simplesmente falha. Soluções iniciais foram descobertas para redes síncronas onde 
+há um limite superior na latência da mensagem, embora o uso prático fosse limitado a ambientes altamente controlados,
+como controladores de avião e datacenters sincronizados via relógios atômicos. 
+Não foi até o final dos anos 90 que a Practical Byzantine Fault Tolerance (PBFT) foi introduzida como 
+um eficiente algoritmo de consenso parcialmente síncrono capaz de tolerar até ⅓ de processos
+comportando-se arbitrariamente. PBFT tornou-se o algoritmo padrão, gerando muitas variações,
+incluindo mais recentemente uma criada pela IBM como parte de sua contribuição para a Hyperledger.
 
-The main benefit of Tendermint consensus over PBFT is that Tendermint has an
-improved and simplified underlying structure, some of which is a result of
-embracing the blockchain paradigm.  Tendermint blocks must commit in order,
-which obviates the complexity and communication overhead associated with PBFT's
-view-changes.  In Cosmos and many cryptocurrencies, there is no need to allow
-for block <em>N+i</em> where <em>i >= 1</em> to commit, when block <em>N</em>
-itself hasn't yet committed. If bandwidth is the reason why block <em>N</em>
-hasn't committed in a Cosmos zone, then it doesn't help to use bandwidth sharing
-votes for blocks <em>N+i</em>. If a network partition or offline nodes is the
-reason why block <em>N</em> hasn't committed, then <em>N+i</em> won't commit
-anyway.
+O principal benefício do consenso Tendermint sobre PBFT é que o Tendermint tem uma estrutura 
+subjacente melhorada e simplificada, um dos quais é um resultado de adotar o paradigma blockchain.
+Blocos Tendermint devem confirmar em ordem, o que evita a complexidade e sobrecarga de comunicação 
+associada a alteração de visão do PBFT's. No Cosmos e muitas outras criptomoedas,
+não há necessidade de permitir o bloco <em>N+i</em> onde <em>i >= 1</em> se confirmar, 
+quando o próprio bloco <em>N</em> ainda não se confirmou. Se a largura de banda é a razão 
+pela qual o bloco <em>N</em> não se confirmou em uma zona do Cosmos, então isso não ajuda
+a usar os votos de compartilhamento de largura de banda para blocos <em>N+i</em>. 
+Se uma partição de rede ou nós offline for a razão pela qual o bloco <em>N</em> não foi confirmado,
+<em>N+i</em> não se comprometerá de qualquer maneira. 
 
-In addition, the batching of transactions into blocks allows for regular
-Merkle-hashing of the application state, rather than periodic digests as with
-PBFT's checkpointing scheme.  This allows for faster provable transaction
-commits for light-clients and faster inter-blockchain communication.
+Além disso, o lote de transações em blocos permite que o Merkle-hashing regule o estado da aplicação,
+ao invés de resumos periódicos com esquemas de pontos de verificação como PBFT faz. 
+Isso permite confirmações de transações mais rápidas para clientes leves e uma comunicação mais rápida entre a blockchain.
 
-Tendermint Core also includes many optimizations and features that go above and
-beyond what is specified in PBFT.  For example, the blocks proposed by
-validators are split into parts, Merkle-ized, and gossipped in such a way that
-improves broadcasting performance (see LibSwift [\[19\]][19] for inspiration).
-Also, Tendermint Core doesn't make any assumption about point-to-point
-connectivity, and functions for as long as the P2P network is weakly connected.
+Tendermint Core também inclui muitas otimizações e recursos que vão acima e além do que é especificado no PBFT.
+Por exemplo, os blocos propostos pelos validadores são divididos em partes, 
+Merkleized e inútilizados de tal forma que melhora o desempenho da transmissão 
+(ver LibSwift [\[19\]][19] para inspiração). Além disso, Tendermint Core não faz qualquer suposição sobre 
+a conectividade ponto-a-ponto, e funciona durante o tempo que a rede P2P está fracamente conectada.
 
-#### BitShares delegated stake
+#### Participação delegada do BitShares
 
-While not the first to deploy proof-of-stake (PoS), BitShares [\[12\]][12]
-contributed considerably to research and adoption of PoS blockchains,
-particularly those known as "delegated" PoS.  In BitShares, stake holders elect
-"witnesses", responsible for ordering and committing transactions, and
-"delegates", responsible for coordinating software updates and parameter
-changes.  Though BitShares achieves high performance (100k tx/s, 1s latency) in
-ideal conditions, it is subject to double spend attacks by malicious witnesses
-which fork the blockchain without suffering an explicit economic punishment --
-it suffers from the "nothing-at-stake" problem. BitShares attempts to mitigate
-the problem by allowing transactions to refer to recent block-hashes.
-Additionally, stakeholders can remove or replace misbehaving witnesses on a
-daily basis, though this does nothing to explicitly punish successful 
-double-spend attacks.
+Apesar de não serem os primeiros a implementar a prova-de-participação (Proof-of-Stake - PoS),
+o BitShares [\[12\]][12] contribuiu consideravelmente para a pesquisa e adoção das blockchains que usam o PoS,
+particularmente aqueles conhecidos como PoS "delegados". No BitShares, as partes interessadas elegem "testemunhas",
+responsáveis por ordenar e confirmar transações e "delegados", responsáveis pela coordenação 
+de atualizações de software e alterações de parâmetros. Embora o BitShares atinja alto desempenho
+(100k tx/s, 1s de latência) em condições ideais, ele está sujeito a ataques de duplo gasto por testemunhas
+maliciosas que "forkem" a blockchain sem sofrer uma punição econômica explícita - ele sofre do problema
+"nada a perder". O BitShares tenta suavizar o problema permitindo que as transações se refiram a 
+blocos-hashes recentes. Além disso, as partes interessadas podem remover ou substituir 
+testemunhas de má conduta diariamente, embora isso não faça nada para punir 
+explicitamente os ataques bem sucedidos de duplo gasto.
 
 #### Stellar
 
-Building on an approach pioneered by Ripple, Stellar [\[13\]][13] refined a
-model of Federated Byzantine Agreement wherein the processes participating in
-consensus do not constitute a fixed and globally known set.  Rather, each
-process node curates one or more "quorum slices", each constituting a set of
-trusted processes. A "quorum" in Stellar is defined to be a set of nodes that
-contain at least one quorum slice for each node in the set, such that agreement 
-can be reached.
+Baseando-se em uma abordagem pioneira da Ripple, a Stellar [\[13\]][13]  refinou um modelo do 
+Federated Byzantine Agreement em que os processos que participam do consenso não constituem 
+um conjunto fixo e globalmente conhecido. Em vez disso, cada nó de processo codifica uma ou mais 
+"fatias de quórum", cada uma constituindo um conjunto de processos confiáveis. Um "quórum" na 
+Stellar é definido como um conjunto de nós que contêm pelo menos uma fatia de quórum para cada 
+nó no conjunto, de modo que o acordo possa ser alcançado.
 
-The security of the Stellar mechanism relies on the assumption that the
-intersection of *any* two quorums is non-empty, while the availability of a node
-requires at least one of its quorum slices to consist entirely of correct nodes,
-creating a trade-off between using large or small quorum-slices that may be
-difficult to balance without imposing significant assumptions about trust.
-Ultimately, nodes must somehow choose adequate quorum slices for there to be
-sufficient fault-tolerance (or any "intact nodes" at all, of which much of the
-results of the paper depend on), and the only provided strategy for ensuring
-such a configuration is heirarchical and similar to the Border Gateway Protocol
-(BGP), used by top-tier ISPs on the internet to establish global routing tables,
-and by that used by browsers to manage TLS certificates; both notorious for
-their insecurity.
+A segurança do mecanismo Stellar baseia-se no pressuposto de que a intersecção de *qualquer* dois
+quóruns é não-vazia, enquanto a disponibilidade de um nó requer pelo menos uma das suas fatias de 
+quórum para consistir inteiramente de nós corretos, criando um troca externa entre o uso de grandes 
+ou pequenas fatias-quórum que podem ser difíceis de equilíbrar sem impor pressupostos significativos 
+sobre a confiança. Em última análise, os nós precisam, de alguma forma, escolher fatias de quórum adequadas
+para que haja tolerância suficiente a falhas (ou qualquer "nó intacto" em geral, do qual muitos dos
+resultados do trabalho dependem) e a única estratégia fornecida para garantir tal configuração é 
+hierárquica e similar ao Border Gateway Protocol (BGP), usado por ISPs de primeira linha na 
+internet para estabelecer tabelas de roteamento globais e usado pelos navegadores para gerenciar 
+certificados TLS; Ambos notórios por sua insegurança.
 
-The criticism in the Stellar paper of the Tendermint-based proof-of-stake
-systems is mitigated by the token strategy described here, wherein a new type of
-token called the _atom_ is issued that represent claims to future portions of
-fees and rewards. The advantage of Tendermint-based proof-of-stake, then, is its
-relative simplicity, while still providing sufficient and provable security
-guarantees.
+A crítica sobre papel da Stellar nos sistemas PoS baseados em Tendermint é atenuada pela estratégia 
+de token descrita aqui, em que um novo tipo de token chamado _atom_ é emitido para representar
+reivindicações para futuras porções de taxas e recompensas. A vantagem do PoS baseado em Tendermint,
+portanto, é a sua relativa simplicidade, ao mesmo tempo que oferece garantias de segurança suficientes e prováveis.
 
 #### BitcoinNG
 
-BitcoinNG is a proposed improvement to Bitcoin that would allow for forms of
-vertical scalability, such as increasing the block size, without the negative
-economic consequences typically associated with such a change, such as the
-disproportionately large impact on small miners.  This improvement is achieved
-by separating leader election from transaction broadcast: leaders are first
-elected by proof-of-work in "micro-blocks", and then able to broadcast
-transactions to be committed until a new micro-block is found. This reduces the
-bandwidth requirements necessary to win the PoW race, allowing small miners to
-more fairly compete, and allowing transactions to be committed more regularly by
-the last miner to find a micro-block.
+O BitcoinNG é uma proposta de melhoria do Bitcoin que permitiria formas de escalabilidade vertical, 
+como o aumento do tamanho do bloco, sem as conseqüências econômicas negativas normalmente associadas a tal mudança,
+como o impacto desproporcionalmente grande sobre os pequenos mineradores. Esta melhoria é conseguida separando 
+a eleição do líder da transmissão da transação: os líderes são eleitos pela primeira vez
+por prova de trabalho(PoW) em "microblocos", e então são capazes de transmitir transações a
+serem confirmadas até que um novo microbloco seja encontrado. Isso reduz os requisitos
+de largura de banda necessários para vencer a corrida PoW, permitindo que os pequenos 
+mineiros possam competir mais justamente, e permitindo que as transações sejam confirmadas
+com mais regularidade pelo último minerador para encontrar um micro-bloco.
 
 #### Casper
 
-Casper [\[16\]][16] is a proposed proof-of-stake consensus algorithm for
-Ethereum.  Its prime mode of operation is "consensus-by-bet".  By letting 
-validators iteratively bet on which block they believe will become committed 
-into the blockchain based on the other bets that they have seen so far,
-finality can be achieved eventually.
-[link](https://blog.ethereum.org/2015/12/28/understanding-serenity-part-2-casper/).
-This is an active area of research by the Casper team.  The challenge is in
-constructing a betting mechanism that can be proven to be an evolutionarily
-stable strategy.  The main benefit of Casper as compared to Tendermint may be in
-offering "availability over consistency" -- consensus does not require a +⅔
-quorum of voting power -- perhaps at the cost of commit speed or
-implementation complexity.
+Casper [\[16\]][16] é uma proposta de algoritmo de consenso PoS para o Ethereum. 
+Seu modo principal de operação é "consenso-por-aposta". Ao permitir que os validadores apostem 
+iterativamente em qual bloco eles acreditam que será confirmado na blockchain com base nas
+outras apostas que eles têm visto até agora, a finalidade pode ser alcançada eventualmente.
+[link](https://blog.ethereum.org/2015/12/28/understanding-serenity-part-2-casper/). Esta é uma área ativa 
+de pesquisa da equipe de Casper. O desafio está na construção de um mecanismo de apostas que pode ser 
+comprovado como uma estratégia evolutivamente estável. O principal benefício da Casper em relação à
+Tendermint pode ser a oferta de "disponibilidade sobre a consistência" - consenso não requer
+um quórum +⅔ de poder de voto - talvez ao custo de velocidade de confirmação ou complexidade de implementação.
 
-### Horizontal Scaling
+### Escala Horizontal
 
-#### Interledger Protocol
+#### Protocolo Interledger
 
-The Interledger Protocol [\[14\]][14] is not strictly a scalability solution. It
-provides an ad hoc interoperation between different ledger systems through a
-loosely coupled bilateral relationship network.  Like the Lightning Network, the
-purpose of ILP is to facilitate payments, but it specifically focuses on
-payments across disparate ledger types, and extends the atomic transaction
-mechanism to include not only hash-locks, but also a quorum of notaries (called
-the Atomic Transport Protocol).  The latter mechanism for enforcing atomicity in
-inter-ledger transactions is similar to Tendermint's light-client SPV echanism,
-so an illustration of the distinction between ILP and Cosmos/IBC is warranted,
-and provided below.
+O Protocolo Interledger [\[14\]][14] não é estritamente uma solução de escalabilidade.
+Ele fornece uma interoperabilidade ad hoc entre diferentes sistemas de ledger através de uma rede
+de relações bilaterais livremente acopladas. Tal como a Lightning Network, a finalidade do 
+ILP é facilitar pagamentos, mas focaliza especificamente pagamentos em diferentes tipos de ledger,
+estendendo o mecanismo de transações atômicas para incluir não apenas hash-locks, mas também um
+quórum de notários (chamado de Atomic Transport Protocol). O último mecanismo para reforçar a
+atomicidade em transacções entre-ledger é semelhante ao mecanismo SPV do cliente leve do Tendermint,
+então uma ilustração da distinção entre ILP e Cosmos/IBC é garantida, e fornecida abaixo.
 
-1. The notaries of a connector in ILP do not support membership changes, and
-   do not allow for flexible weighting between notaries.  On the other hand,
-IBC is designed specifically for blockchains, where validators can have
-different weights, and where membership can change over the course of the
-blockchain.
+1. Os notários de um conector em ILP não suportam mudanças de consentimento, e não permitem uma 
+pesagem flexível entre notários. Por outro lado, o IBC é projetado especificamente para blockchains,
+onde os validadores podem ter diferentes pesos, e onde o consentimento pode mudar ao longo da cadeia de blocos.
 
-2. As in the Lightning Network, the receiver of payment in ILP must be online to
-   send a confirmation back to the sender.  In a token transfer over IBC, the
-validator-set of the receiver's blockchain is responsible for providing
-confirmation, not the receiving user.
+2. Como na Lightning Network, o receptor do pagamento em ILP deve estar on-line para enviar 
+uma confirmação de volta ao remetente. Em uma transferência de token sobre IBC, o conjunto
+de validadores da blockchain do receptor é responsável por fornecer a confirmação, não o usuário receptor.
 
-3. The most striking difference is that ILP's connectors are not responsible or
-   keeping authoritative state about payments, whereas in Cosmos, the validators
-of a hub are the authority of the state of IBC token transfers as well as the
-authority of the amount of tokens held by each zone (but not the amount of
-tokens held by each account within a zone).  This is the fundamental innovation
-that allows for secure asymmetric tranfer of tokens from zone to zone; the
-analog to ILP's connector in Cosmos is a persistent and maximally secure
-blockchain ledger, the Cosmos Hub.
+3. A diferença mais notável é que os conectores do ILP não são responsáveis ou mantêm o estado 
+autoritário sobre os pagamentos, enquanto que no Cosmos, os validadores de um hub são a autoridade
+do estado das transferências de tokens do IBC, bem como a autoridade da quantidade de tokens 
+mantidos por cada zona (mas não a quantidade de tokens mantidos por cada conta dentro de uma zona).
+Esta é a inovação fundamental que permite a tranferência assimétrica segura de tokens de zona para
+zona; O conector analógico do ILP no Cosmos é uma persistente e maximamente segura ledger de blockchain, o Cosmos Hub.
 
-4. The inter-ledger payments in ILP need to be backed by an exchange orderbook,
-   as there is no asymmetric transfer of coins from one ledger to another, only
-the transfer of value or market equivalents.
+4. Os pagamentos entre contas no ILP precisam ser suportados por uma ordem de compra/venda, uma 
+vez que não há transferência assimétrica de moedas de um ledger para outro, apenas a transferência 
+de valor ou equivalentes de mercado.
 
 #### Sidechains
 
-Sidechains [\[15\]][15] are a proposed mechanism for scaling the Bitcoin network
-via alternative blockchains that are "pegged" to the Bitcoin blockchain.
-Sidechains allow bitcoins to effectively move from the Bitcoin blockchain to the
-sidechain and back, and allow for experimentation in new features on the
-sidechain.  As in the Cosmos Hub, the sidechain and Bitcoin serve as
-light-clients of each other, using SPV proofs to determine when coins should be
-transferred to the sidechain and back.  Of course, since Bitcoin uses
-proof-of-work, sidechains centered around Bitcoin suffer from the many problems
-and risks of proof-of-work as a consensus mechanism.  Furthermore, this is a
-Bitcoin-maximalist solution that doesn't natively support a variety of tokens
-and inter-zone network topology as Cosmos does. That said, the core mechanism of
-the two-way peg is in principle the same as that employed by the Cosmos network.
+Sidechains [\[15\]][15] são um mecanismo proposto para dimensionar a rede Bitcoin através de
+blockchains alternativas que são "atreladas" para a blockchain do Bitcoin. As Sidechains
+permitem que bitcoins se movam efetivamente da blockchain do Bitcoin para a sidechain e retornarem,
+e permitem a experimentação em novos recursos na sidechain. Como no Cosmos Hub, a sidechain e
+Bitcoin servem como clientes leves uns dos outros, usando provas SPV para determinar quando as moedas 
+devem ser transferidas para a cadeia lateral e retornarem. Claro, como o Bitcoin usa PoW, sidechains 
+centradas em torno do Bitcoin sofrem dos muitos problemas e riscos do PoW como um mecanismo de consenso. 
+Além disso, esta é uma solução Bitcoin-maximalista que não suporta nativamente uma variedade de tokens e
+topologia de rede entre-zona como o Cosmos faz. Dito isto, o mecanismo de núcleo bidirecional atrelado é, 
+em princípio, o mesmo que o empregado pela rede Cosmos.
 
-#### Ethereum Scalability Efforts
+#### Esforços de Escalabilidade do Ethereum
 
-Ethereum is currently researching a number of different strategies to shard the
-state of the Ethereum blockchain to address scalability needs. These efforts
-have the goal of maintaining the abstraction layer offered by the current
-Ethereum Virtual Machine across the shared state space. Multiple research
-efforts are underway at this time. [\[18\]][18][\[22\]][22]
+Ethereum está atualmente pesquisando uma série de estratégias diferentes para fragmentar o 
+estado da blockchain do Ethereum para atender às necessidades de escalabilidade. 
+Esses esforços têm como objetivo manter a camada de abstração oferecida pela atual
+Ethereum Virtual Machine através do espaço de estado compartilhado. Vários esforços de
+pesquisa estão em andamento neste momento. [\[18\]][18][\[22\]][22]
 
 ##### Cosmos vs Ethereum 2.0 Mauve
  
-Cosmos and Ethereum 2.0 Mauve [\[22\]][22] have different design goals.
+Cosmos e Ethereum 2.0 Mauve [\[22\]][22] tem diferentes objetivos de projeto.
 
-* Cosmos is specifically about tokens.  Mauve is about scaling general computation.
-* Cosmos is not bound to the EVM, so even different VMs can interoperate.
-* Cosmos lets the zone creator determine who validates the zone.
-* Anyone can start a new zone in Cosmos (unless governance decides otherwise).
-* The hub isolates zone failures so global token invariants are preserved.
+* Cosmos é especificamente sobre tokens. Malva é sobre escalonamento de computação geral.
+* O Cosmos não está ligado ao EVM, por isso mesmo VMs diferentes podem interoperar.
+* Cosmos permite que o criador da zona determine quem valida a zona.
+* Qualquer pessoa pode iniciar uma nova zona no Cosmos (a menos que a governança decida o contrário).
+* O hub isola falhas de zonas de modo que tokens invariantes sejam preservados.
 
-### General Scaling
+### Escala Geral
 
 #### Lightning Network
 
-The Lightning Network is a proposed token transfer network operating at a layer
-above the Bitcoin blockchain (and other public blockchains), enabling improvement of many
-orders of magnitude in transaction throughput by moving the majority
-of transactions outside of the consensus ledger into so-called "payment
-channels". This is made possible by on-chain cryptocurrency scripts, which
-enable parties to enter into bilateral stateful contracts where the state can
-be updated by sharing digital signatures, and contracts can be closed by finally
-publishing evidence onto the blockchain, a mechanism first popularized by
-cross-chain atomic swaps.  By opening payment channels with many parties,
-participants in the Lightning Network can become focal points for routing the
-payments of others, leading to a fully connected payment channel network, at the
-cost of capital being tied up on payment channels.
+A Lightning Network é uma proposta de rede de transferência de token operando em uma camada acima
+da blockchain do Bitcoin (e outras blockchains públicas), permitindo a melhoria de muitas ordens
+de magnitude no processamento de transações movendo a maioria das transações fora da ledger de consenso
+para o chamado "Canais de pagamento". Isso é possível graças a scripts de criptomoedas em cadeia, 
+que permitem que as partes entrem em contratos estatais bilaterais onde o estado pode ser atualizado 
+compartilhando assinaturas digitais, e os contratos podem ser fechados definitivamente publicando
+evidências na blockchain, um mecanismo primeiramente popularizado por trocas atômicas de 
+cross-chains(cadeias cruzadas). Ao abrir canais de pagamento com muitas partes, os participantes
+da Lightning Network podem se tornar pontos focais para encaminhar os pagamentos de outros,
+levando a uma rede de canais de pagamento totalmente conectada, ao custo do capital estar ligado aos canais de pagamento.
 
-While the Lightning Network can also easily extend across multiple independent
-blockchains to allow for the transfer of _value_ via an exchange market, it
-cannot be used to assymetrically transfer _tokens_ from one blockchain to
-another.  The main benefit of the Cosmos network described here is to enable
-such direct token transfers.  That said, we expect payment channels and the
-Lightning Network to become widely adopted along with our token transfer
-mechanism, for cost-saving and privacy reasons.
+Enquanto a Lightning Network também pode facilmente se estender através de várias blockchains independentes
+para permitir a transferência de _value_ através de um mercado de câmbio, não pode ser usado para
+transferir assimetricamente _tokens_ de uma blockchain para outra. O principal benefício da rede Cosmos
+descrita aqui é permitir tais transferências diretas de tokens. Dito isto, esperamos que os canais de
+pagamento e a Lightning Network sejam amplamente adotados juntamente com nosso mecanismo de transferência 
+de token, por razões de economia de custos e privacidade.
 
 #### Segregated Witness
 
-Segregated Witness is a Bitcoin improvement proposal
-[link](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki) that aims
-to increase the per-block tranasction throughput 2X or 3X, while simultaneously
-making block syncing faster for new nodes.  The brilliance of this solution is
-in how it works within the limitations of Bitcoin's current protocol and allows
-for a soft-fork upgrade (i.e. clients with older versions of the software will
-continue to function after the upgrade).  Tendermint, being a new protocol, has no
-design restrictions, so it has a different scaling priorities.  Primarily,
-Tendermint uses a BFT round-robin algorithm based on cryptographic signatures
-instead of mining, which trivially allows horizontal scaling through multiple
-parallel blockchains, while regular, more frequent block commits allow for
-vertical scaling as well.
+Segregated Witness é uma proposta de melhoria do Bitcoin 
+[link](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki) que visa aumentar em 2X ou 3X a 
+taxa de transferência por bloco, ao mesmo tempo que faz a sincronização de blocos ser mais rapida para 
+novos nós. O brilho desta solução é de como ele funciona dentro das limitações do protocolo atual do Bitcoin
+e permite uma atualização de soft-fork (ou seja, os clientes com versões mais antigas do software
+continuarão funcionando após a atualização). O Tendermint, sendo um novo protocolo, não tem restrições 
+de projeto, por isso tem prioridades diferentes de escalonamento. Sobretudo, o Tendermint usa um algoritmo 
+de rodízio BFT baseado em assinaturas criptográficas em vez de mineração, o que trivialmente permite escalonamento
+horizontal através de múltiplas blockchains paralelas, enquanto que os regulares e mais frequentes blocos confirmam
+a escala vertical também.
 
 <hr/>
 
-## Appendix ####################################################################
+## Apêndice ####################################################################
 
-### Fork Accountability
+### Responsabilidade de Fork
 
-A well designed consensus protocol should provide some guarantees in the event that the tolerance
-capacity is exceeded and the consensus fails.  This is especially necessary in
-economic systems, where Byzantine behaviour can have substantial financial
-reward.  The most important such guarantee is a form of _fork-accountability_,
-where the processes that caused the consensus to fail (ie.  caused clients of
-the protocol to accept different values - a fork) can be identified and punished
-according to the rules of the protocol, or, possibly, the legal system.  When
-the legal system is unreliable or excessively expensive to invoke, validators can be forced to make security
-deposits in order to participate, and those deposits can be revoked, or slashed,
-when malicious behaviour is detected [\[10\]][10].
+Um protocolo de consenso bem projetado deve fornecer algumas garantias no caso da capacidade de
+tolerância ser excedida e o consenso falhar. Isto é especialmente necessário nos sistemas econômicos, 
+onde o comportamento Bizantino pode ter recompensa financeira substancial. A
+garantia maisimportante é uma forma de _fork-accountability_, onde os processos que 
+fizeram com que o consenso falhasse (ou seja, clientes do protocolo
+motivados para aceitar valores diferentes - um fork) podem ser identificados e punidos de acordo com as
+regras do protocolo , Ou, possivelmente, o sistema jurídico. Quando o sistema jurídico não é confiável
+ou é excessivamente caro para suplicar, os validadores podem ser forçados a fazerem depósitos de segurança
+para participar, e esses depósitos podem ser revogados ou cortados, quando um comportamento malicioso é detectado [\[10\]][10].
 
-Note this is unlike Bitcoin, where forking is a regular occurence due to
-network asynchrony and the probabilistic nature of finding partial hash
-collisions.  Since in many cases a malicious fork is indistinguishable from a
-fork due to asynchrony, Bitcoin cannot reliably implement fork-accountability,
-other than the implicit opportunity cost paid by miners for mining an orphaned
-block.
+Observe que isso é diferente do Bitcoin, onde o fork é uma ocorrência regular devido à assincronia de 
+rede e à natureza probabilística de encontrar colisões de hash parciais. Uma vez que, em muitos casos,
+um fork malicioso é indistinguível de um fork devido à assincronia, o Bitcoin não pode implementar de 
+forma confiável a responsabilidade de um fork, com exceção do custo implícito pago por mineradores que 
+tem a oportunidade de minerarem um bloco órfão.
 
+### Consenso Tendermint 
 
-### Tendermint Consensus 
+Chamamos as fases de votação de _PreVote_ e _PreCommit_. Um voto pode ser para um bloco em particular ou 
+para _Nil_. Chamamos uma coleção de +⅔ PreVotes para um único bloco na mesma rodada de um _Polka_, e uma 
+coleção de +⅔ PreCommits para um único bloco na mesma rodada de um _Commit_. Se +⅔ PreCommit para Nil na 
+mesma rodada, eles passam para a próxima rodada.
 
-We call the voting stages _PreVote_ and _PreCommit_. A vote can be for a
-particular block or for _Nil_.  We call a collection of +⅔ PreVotes for a single
-block in the same round a _Polka_, and a collection of +⅔ PreCommits for a
-single block in the same round a _Commit_.  If +⅔ PreCommit for Nil in the same
-round, they move to the next round.
+Observe que o determinismo estrito no protocolo incorre em uma suposição de sincronia fraca, pois os líderes
+com falhas devem ser detectados e ignorados. Assim, os validadores aguardam algum tempo, _TimeoutPropose_,
+antes de Prevote Nil, e o valor de TimeoutPropose aumenta a cada rodada. A progressão através do 
+resto de uma rodada é totalmente assincrôna, onde o progresso é feito somente quando um validador 
+ouve de +⅔ da rede. Na prática, seria necessário um adversário extremamente forte para impedir 
+indefinidamente a suposição de sincronia fraca (fazendo com que o consenso deixasse de confirmar um bloco),
+e isso pode ser ainda mais difícil usando valores randomizados de TimeoutPropose em cada validador.
 
-Note that strict determinism in the protocol incurs a weak synchrony assumption
-as faulty leaders must be detected and skipped.  Thus, validators wait some
-amount of time, _TimeoutPropose_, before they Prevote Nil, and the value of
-TimeoutPropose increases with each round.  Progression through the rest of a
-round is fully asychronous, in that progress is only made once a validator hears
-from +⅔ of the network.  In practice, it would take an extremely strong
-adversary to indefinetely thwart the weak synchrony assumption (causing the
-consensus to fail to ever commit a block), and doing so can be made even more
-difficult by using randomized values of TimeoutPropose on each validator.
+Um conjunto adicional de restrições, ou Locking Rules(Regras de bloqueio), garante que a rede acabará 
+por confirmar apenas um bloco em cada altura. Qualquer tentativa maliciosa de confirmar de causar um
+bloco a ser confirmado a uma determinada altura pode ser identificada. Primeiro, um PreCommit para um
+bloco deve vir com justificação, na forma de um Polka para esse bloco. Se o validador já tiver PreCommit
+um bloco na rodada <em>R_1</em>, nós dizemos que eles estão _locked_ nesse bloco, e o Polka usado
+para justificar o novo PreCommit na rodada <em>R_2</em> deve vir de uma rodada <em>R_polka</em> 
+onde <em>R_1 &lt; R_polka &lt;= R_2</em>. Em segundo lugar, os validadores devem propor e/ou pré-votar
+o bloco que eles estão travados. Juntas, essas condições garantem que um validador não PreCommit
+sem evidência suficiente como justificativa, e que os validadores que já têm PreCommit não podem 
+contribuir para a evidência de PreCommit algo mais. Isso garante a segurança e a vivacidade do algoritmo de consenso.
 
-An additional set of constraints, or Locking Rules, ensure that the network will
-eventually commit just one block at each height. Any malicious attempt to cause
-more than one block to be committed at a given height can be identified.  First,
-a PreCommit for a block must come with justification, in the form of a Polka for
-that block. If the validator has already PreCommit a block at round
-<em>R_1</em>, we say they are _locked_ on that block, and the Polka used to
-justify the new PreCommit at round <em>R_2</em> must come in a round
-<em>R_polka</em> where <em>R_1 &lt; R_polka &lt;= R_2</em>.  Second, validators
-must Propose and/or PreVote the block they are locked on.  Together, these
-conditions ensure that a validator does not PreCommit without sufficient
-evidence as justification, and that validators which have already PreCommit
-cannot contribute to evidence to PreCommit something else.  This ensures both
-safety and liveness of the consensus algorithm.
+Os detalhes completos do protocolo são descritos
+[aqui](https://github.com/tendermint/tendermint/wiki/Byzantine-Consensus-Algorithm).
 
-The full details of the protocol are described
-[here](https://github.com/tendermint/tendermint/wiki/Byzantine-Consensus-Algorithm).
+### Clientes Leves do Tendermint
 
-### Tendermint Light Clients
+A necessidade de sincronizar todos os cabeçalhos de bloco é eliminada no Tendermint-PoS, como por exemplo
+a existência de uma cadeia alternativa (um fork) significando que ⅓+ do stake ligado pode ser reduzido. 
+Naturalmente, a partir que dividir requer que _someone_ compartilhe evidência de um fork, clientes leves 
+devem armazenar qualquer bloco-hash comprometido que eles vêem. Além disso, os clientes leves podem
+periodicamente ficarem sincronizados com as alterações no conjunto de validadores, para evitar
+[ataques de longo alcance] (#preventing-long-range-attacks) (mas outras soluções são possíveis).
 
-The need to sync all block headers is eliminated in Tendermint-PoS as the
-existence of an alternative chain (a fork) means ⅓+ of bonded stake can be
-slashed.  Of course, since slashing requires that _someone_ share evidence of a
-fork, light clients should store any block-hash commits that it sees.
-Additionally, light clients could periodically stay synced with changes to the
-validator set, in order to avoid [long range
-attacks](#preventing-long-range-attacks) (but other solutions are possible).
+Em espírito semelhante do Ethereum, o Tendermint permite que os aplicativos incorporem um hash de raiz 
+Merkle global em cada bloco, permitindo verifícações fáceis de consultas de estado para fins como saldos
+de contas, o valor armazenado em um contrato ou a existência de saída de uma transação não gasta,
+dependendo da natureza da aplicação.
 
-In spirit similar to Ethereum, Tendermint enables applications to embed a
-global Merkle root hash in each block, allowing easily verifiable state queries
-for things like account balances, the value stored in a contract, or the
-existence of an unspent transaction output, depending on the nature of the
-application.
+### Prevenção de ataques de longo alcance
 
-### Preventing Long Range Attacks
+Assumindo uma coleção suficientemente elástica de redes de difusão e um conjunto de validador 
+estático, qualquer fork na blockchain pode ser detectado e os depósitos dos validadores ofensivos cortados.
+Esta inovação, sugerida pela primeira vez por Vitalik Buterin no início de 2014, resolve o problema do "nada a perder" de outras
+criptomoedas de PoW (ver [Trabalho Relacionado](#related-work)). No entanto, uma vez que os conjuntos de 
+validadores devem ser capazes de mudar, durante um longo período de tempo, os validadores originais podem 
+tornar-se não ligados e, portanto, seriam livres para criar uma nova cadeia a partir do bloco gênese, 
+não incorrendo nenhum custo, visto que eles não tem depósitos trancados. Este ataque veio a ser conhecido
+como Ataque de Longo Alcance (Long Range Attack - LRA), em contraste com um Ataque de Curto Alcance, 
+onde os validadores que estão atualmente ligados causam um fork e são, portanto, puníveis 
+(assumindo um algoritimo BFT de fork-responsável como o consenso Tendermint).
+Ataques de longo alcance são muitas vezes pensados para serem um golpe crítico para o PoW.
 
-Assuming a sufficiently resilient collection of broadcast networks and a static
-validator set, any fork in the blockchain can be detected and the deposits of
-the offending validators slashed.  This innovation, first suggested by Vitalik
-Buterin in early 2014, solves the nothing-at-stake problem of other
-proof-of-stake cryptocurrencies (see [Related Work](#related-work)). However,
-since validator sets must be able to change, over a long range of time the
-original validators may all become unbonded, and hence would be free to create a
-new chain from the genesis block, incurring no cost as they no longer have
-deposits locked up.  This attack came to be known as the Long Range Attack (LRA),
-in contrast to a Short Range Attack, where validators who are currently bonded
-cause a fork and are hence punishable (assuming a fork-accountable BFT algorithm
-like Tendermint consensus). Long Range Attacks are often thought to be a
-critical blow to proof-of-stake.
+Felizmente, o LRA pode ser atenuado da seguinte forma. Em primeiro lugar, para que um validador se
+desatar (assim recuperando seu depósito colateral e não mais ganhando taxas para participar no consenso),
+o depósito deve ser tornado intransferível por um período de tempo conhecido como o "unbonding period"
+(período de desatamento), que pode ser na ordem de semanas ou meses. Em segundo lugar, para um cliente 
+leve ser seguro, a primeira vez que ele se conecta à rede, ele deve verificar um hash de bloqueio recente
+contra uma fonte confiável ou, preferencialmente, várias fontes. Esta condição é por vezes referida como
+"subjetividade fraca". Finalmente, para permanecer seguro, ele deve sincronizar com o mais recente 
+validador definido, pelo menos, tão frequentemente quanto a duração do período de desatamento.
+Isso garante que o cliente leve saiba sobre as alterações no conjunto de validação definido antes de
+um validador não ter mais o seu capital ligado e, portanto, não mais em jogo, o que permitiria enganar
+o cliente, executando um ataque de longo alcance, criando novos blocos re-começando em uma altura
+a qual foi ligado (assumindo que tem controle de muitas das primeiras chaves privadas).
 
-Fortunately, the LRA can be mitigated as follows.  First, for a validator to
-unbond (thereby recovering their collateral deposit and no longer earning fees
-to participate in the consensus), the deposit must be made untransferable for an
-amount of time known as the "unbonding period", which may be on the order of
-weeks or months.  Second, for a light client to be secure, the first time it
-connects to the network it must verify a recent block-hash against a trusted
-source, or preferably multiple sources.  This condition is sometimes referred to
-as "weak subjectivity".  Finally, to remain secure, it must sync up with the
-latest validator set at least as frequently as the length of the unbonding
-period. This ensures that the light client knows about changes to the validator
-set before a validator has its capital unbonded and thus no longer at stake,
-which would allow it to deceive the client by carrying out a long range attack
-by creating new blocks beginning back at a height where it was bonded (assuming
-it has control of sufficiently many of the early private keys).
+Note que superar o LRA desta forma requer uma revisão do modelo de segurança original do PoW. No PoW, 
+presume-se que um cliente leve pode sincronizar com a altura atual do bloco gênese confiável a qualquer
+momento simplesmente processando o PoW em cada cabeçalho de bloco. Para superar o LRA, entretanto,
+exigimos que um cliente leve entre em linha com alguma regularidade para rastrear mudanças no conjunto
+de validadores e que, na primeira vez em que eles fiquem on-line, eles devem ser particularmente cuidadosos
+para autenticar o que ouvem da rede contra fontes confiáveis . Naturalmente, este último requisito é 
+semelhante ao do Bitcoin, onde o protocolo e o software também devem ser obtidos a partir de uma fonte confiável.
 
-Note that overcoming the LRA in this way requires an overhaul of the original
-security model of proof-of-work. In PoW, it is assumed that a light client can
-sync to the current height from the trusted genesis block at any time simply by
-processing the proof-of-work in every block header.  To overcome the LRA,
-however, we require that a light client come online with some regularity to
-track changes in the validator set, and that the first time they come online
-they must be particularly careful to authenticate what they hear from the
-network against trusted sources. Of course, this latter requirement is similar
-to that of Bitcoin, where the protocol and software must also be obtained from a
-trusted source.
+O método acima para prevenir LRA é bem adequado para validadores e nós completos de uma blockchain alimentada
+por Tendermint porque estes nós são destinados a permanecerem conectados à rede. O método também é adequado
+para clientes leves que podem ser esperados para sincronizar com a rede com freqüência. No entanto, para
+os clientes leves que não se espera ter acesso frequente à Internet ou à rede da blockchain, ainda pode
+ser utilizada outra solução para superar o LRA. Os detentores de tokens não validadores podem publicar 
+os seus tokens como colaterais com um período de não ligação muito longo (por exemplo, muito mais longo
+do que o período de não ligação para validadores) e servir clientes leves com um método secundário de 
+atestar a validade dos blocos atuais e hashes de blocos passados. Embora esses tokens não contam para a 
+segurança do consenso da blockchain, eles podem fornecer fortes garantias para clientes leves. Se a
+consulta histórica de hash de blocos fosse suportada no Ethereum, qualquer pessoa poderia vincular
+seus tokens em um contrato inteligente projetado especialmente para isso e fornecer serviços de 
+comprovação de pagamentos, efetivamente criando um mercado para a segurança contra LRA de cliente leve.
 
-The above method for preventing LRA is well suited for validators and full nodes
-of a Tendermint-powered blockchain because these nodes are meant to remain
-connected to the network.  The method is also suitable for light clients that
-can be expected to sync with the network frequently.  However, for light clients
-that are not expected to have frequent access to the internet or the blockchain
-network, yet another solution can be used to overcome the LRA.  Non-validator
-token holders can post their tokens as collateral with a very long unbonding
-period (e.g. much longer than the unbonding period for validators) and serve
-light clients with a secondary method of attesting to the validity of current
-and past block-hashes. While these tokens do not count toward the security of
-the blockchain's consensus, they nevertheless can provide strong guarantees for
-light clients.  If historical block-hash querying were supported in Ethereum,
-anyone could bond their tokens in a specially designed smart contract and
-provide attestation services for pay, effectively creating a market for
-light-client LRA security.
+### Superando Forks e Ataques de Censura
 
-### Overcoming Forks and Censorship Attacks
+Devido à definição de uma confimação de bloco, qualquer coalizão de poder de voto ⅓+ pode interromper a
+blockchain ficando off-line ou não transmitir os seus votos. Tal coalizão também pode censurar transações 
+particulares rejeitando blocos que incluem essas transações, embora isso resultaria em uma proporção
+significativa de propostas de blocos a serem rejeitadas, o que iria retardar a taxa de blocos
+confirmados da blockchain, reduzindo sua utilidade e valor. A coalizão mal-intencionada também pode transmitir
+votos em um fio de modo a triturar os blocos confirmados da blockchain para quase parar, ou se envolver em 
+qualquer combinação desses ataques. Finalmente, isso pode fazer com que a cadeia de blocos "forke" (bifurque),
+por dupla assinatura ou violação as regras de bloqueio.
 
-Due to the definition of a block commit, any ⅓+ coalition of voting power can
-halt the blockchain by going offline or not broadcasting their votes. Such a
-coalition can also censor particular transactions by rejecting blocks that
-include these transactions, though this would result in a significant proportion
-of block proposals to be rejected, which would slow down the rate of block
-commits of the blockchain, reducing its utility and value. The malicious
-coalition might also broadcast votes in a trickle so as to grind blockchain
-block commits to a near halt, or engage in any combination of these attacks.
-Finally, it can cause the blockchain to fork, by double-signing or violating the
-locking rules.
+Se um adversário globalmente ativo também estivesse envolvido, poderia dividir a rede de tal maneira que
+possa parecer que o subconjunto errado de validadores era responsável pela desaceleração. Esta não é apenas
+uma limitação do Tendermint, mas sim uma limitação de todos os protocolos de consenso cuja 
+rede é potencialmente controlada por um adversário ativo.
 
-If a globally active adversary were also involved, it could partition the network in
-such a way that it may appear that the wrong subset of validators were
-responsible for the slowdown. This is not just a limitation of Tendermint, but
-rather a limitation of all consensus protocols whose network is potentially
-controlled by an active adversary.
+Para estes tipos de ataques, um subconjunto de validadores deve coordenar através de meios externos
+para assinar um proposta de reorganização que escolhe um fork (e qualquer prova disso) e o 
+subconjunto inicial de validadores com suas assinaturas. Os validadores que assinam tal
+proposta de reorganização deixam seu colateral em todos os outros forks. Os clientes
+devem verificar as assinaturas na proposta de reorganização, verificar qualquer 
+evidência e fazer um julgamento ou solicitar ao usuário final uma decisão. Por exemplo,
+uma carteira para celular um aplicativo que pode alertar o usuário com um aviso de segurança, 
+enquanto um refrigerador pode aceitar qualquer proposta de reorganização assinada por 
++½ dos validadores originais por poder de voto.
 
-For these types of attacks, a subset of the validators should coordinate through
-external means to sign a reorg-proposal that chooses a fork (and any evidence
-thereof) and the initial subset of validators with their signatures. Validators
-who sign such a reorg-proposal forego their collateral on all other forks.
-Clients should verify the signatures on the reorg-proposal, verify any evidence,
-and make a judgement or prompt the end-user for a decision.  For example, a
-phone wallet app may prompt the user with a security warning, while a
-refrigerator may accept any reorg-proposal signed by +½ of the original
-validators by voting power.
+Nenhum algoritmo não-sincrônico tolerante a falhas Bizantino pode chegar a um consenso quando ⅓+
+de poder de voto for desonesto, mas um fork supõe que ⅓+ do poder de voto já foram desonestos por
+dupla assinatura ou bloqueio de mudança sem justificativa. Portanto, assinar a proposta de
+reorganização é um problema de coordenação que não pode ser resolvido por qualquer protocolo 
+não-sincronico (isto é, automaticamente e sem fazer suposições sobre a confiabilidade da rede subjacente).
+Por enquanto, deixamos o problema da coordenação da proposta de reorganização para a coordenação 
+humana através do consenso social na mídia na internet. Os validadores devem ter cuidado para garantir 
+que não haja partições de rede remanescentes antes de assinar uma proposta de reorganização,
+para evitar situações em que duas propostas de reorganização em conflito sejam assinadas.
 
-No non-synchronous Byzantine fault-tolerant algorithm can come to consensus when
-⅓+ of voting power are dishonest, yet a fork assumes that ⅓+ of voting power
-have already been dishonest by double-signing or lock-changing without
-justification.  So, signing the reorg-proposal is a coordination problem that
-cannot be solved by any non-synchronous protocol (i.e. automatically, and
-without making assumptions about the reliability of the underlying network).
-For now, we leave the problem of reorg-proposal coordination to human
-coordination via social consensus on internet media.  Validators must take care
-to ensure that there are no remaining network partitions prior to signing a
-reorg-proposal, to avoid situations where two conflicting reorg-proposals are
-signed.
+Assumindo que o meio de coordenação é externo e o protocolo é robusto, resulta-se que os forks são
+uma preocupação menor do que os ataques de censura.
 
-Assuming that the external coordination medium and protocol is robust, it
-follows that forks are less of a concern than censorship attacks.
+Além de forks e censura, que exigem ⅓+ poder de votação Bizantina, uma coalizão de +⅔ poder de 
+voto pode ser pratica arbitrária, estado inválido. Esta é a característica de qualquer sistema 
+de consenso (BFT). Ao contrário da dupla assinatura, que cria forks com provas facilmente
+verificáveis, a detecção de obrigatoriedade de um estado inválido requer que os pares não 
+validadores verifiquem blocos inteiros, o que implica que eles mantêm uma cópia local do estado
+e executam cada transação, computando a raiz de estado de forma independente para eles mesmos.
+Uma vez detectado, a única maneira de lidar com essa falha é através do consenso social.
+Por exemplo, em situações em que o Bitcoin falhou, seja por causa de bugs de software 
+(como em março de 2013), ou praticar um estado inválido devido ao comportamento Bizantino 
+dos mineradores (como em julho de 2015), a comunidade bem conectada de negócios, desenvolvedores, 
+mineradores e outras organizações estabeleceu um consenso social sobre quais ações manuais se 
+faziam necessárias para curar a rede. Além disso, uma vez que se pode esperar que os validadores 
+de uma cadeia de blocos de Tendermint sejam identificáveis, o compromisso de um estado inválido 
+pode até ser punido por lei ou por alguma jurisprudência externa, se desejado.
 
-In addition to forks and censorship, which require ⅓+ Byzantine voting power, a
-coalition of +⅔ voting power may commit arbitrary, invalid state.  This is
-characteristic of any (BFT) consensus system. Unlike double-signing, which
-creates forks with easily verifiable evidence, detecting committment of an
-invalid state requires non-validating peers to verify whole blocks, which
-implies that they keep a local copy of the state and execute each transaction,
-computing the state root independently for themselves.  Once detected, the only
-way to handle such a failure is via social consensus.  For instance, in
-situations where Bitcoin has failed, whether forking due to software bugs (as in
-March 2013), or committing invalid state due to Byzantine behavior of miners (as
-in July 2015), the well connected community of businesses, developers, miners,
-and other organizations established a social consensus as to what manual actions
-were required by participants to heal the network.  Furthermore, since
-validators of a Tendermint blockchain may be expected to be identifiable,
-commitment of an invalid state may even be punishable by law or some external
-jurisprudence, if desired.
+### Especificação TMSP
 
-### TMSP Specification
+TMSP consiste em 3 tipos de mensagens primárias que são entregues do núcleo para o aplicativo.
+O aplicativo responde com mensagens de resposta correspondentes.
 
-TMSP consists of 3 primary message types that get delivered from the core to the
-application. The application replies with corresponding response messages.
+A mensagem `AppendTx` é o cavalo de trabalho da aplicação. Cada transação na blockchain 
+é entregue com esta mensagem. O aplicativo precisa validar cada transação recebida com a 
+mensagem AppendTx contra o estado atual, o protocolo de aplicativo e as credenciais 
+criptográficas da transação. Uma transação validada precisa atualizar o estado do
+aplicativo - vinculando um valor a um armazenamento de valores chave ou atualizando o banco de dados UTXO.
 
-The `AppendTx` message is the work horse of the application. Each transaction in
-the blockchain is delivered with this message. The application needs to validate
-each transactions received with the AppendTx message against the current state,
-application protocol, and the cryptographic credentials of the transaction. A
-validated transaction then needs to update the application state — by binding a
-value into a key values store, or by updating the UTXO database.
+A mensagem `CheckTx` é semelhante à AppendTx, mas é apenas para validar transações. O mempool do 
+Tendermint Core primeiro verifica a validade de uma transação com o CheckTx e apenas relata 
+transações válidas para seus pares. Os aplicativos podem verificar um nonce incremental na transação 
+e retornar um erro em CheckTx se o nonce é antigo.
 
-The `CheckTx` message is similar to AppendTx, but it’s only for validating
-transactions. Tendermint Core’s mempool first checks the validity of a
-transaction with CheckTx, and only relays valid transactions to its peers.
-Applications may check an incrementing nonce in the transaction and return an
-error upon CheckTx if the nonce is old.
+A mensagem `Commit` é usada para calcular uma obrigação criptográfica com o estado atual da aplicação, 
+para ser colocada no próximo cabeçalho do bloco. Isso tem algumas propriedades úteis. Inconsistências 
+na atualização desse estado agora aparecerão como forks do blockchain que captura uma classe inteira
+de erros de programação. Isso também simplifica o desenvolvimento de clientes leves e seguros,
+já que as provas de Merkle-hash podem ser provadas verificando o hash de blocos, 
+e o hash de blocos é assinado por um quórum de validadores (por poder de voto).
 
-The `Commit` message is used to compute a cryptographic commitment to the
-current application state, to be placed into the next block header. This has
-some handy properties. Inconsistencies in updating that state will now appear as
-blockchain forks which catches a whole class of programming errors. This also
-simplifies the development of secure lightweight clients, as Merkle-hash proofs
-can be verified by checking against the block-hash, and the block-hash is signed
-by a quorum of validators (by voting power).
+Mensagens TMSP adicionais permitem que o aplicativo acompanhe e altere o conjunto 
+de validadores e que o aplicativo receba as informações do bloco, como a altura e os votos de confirmação.
 
-Additional TMSP messages allow the application to keep track of and change the
-validator set, and for the application to receive the block information, such as
-the height and the commit votes.  
-
-TMSP requests/responses are simple Protobuf messages.  Check out the [schema
-file](https://github.com/tendermint/tmsp/blob/master/types/types.proto).
+Pedidos/respostas TMSP são simples mensagens Protobuf.
+Confira o [arquivo do esquema] (https://github.com/tendermint/tmsp/blob/master/types/types.proto).
 
 ##### AppendTx
   * __Arguments__:
-    * `Data ([]byte)`: The request transaction bytes
+    * `Data ([]byte)`: Os bytes de transação solicitada
   * __Returns__:
-    * `Code (uint32)`: Response code
-    * `Data ([]byte)`: Result bytes, if any
-    * `Log (string)`: Debug or error message
+    * `Code (uint32)`: Código de resposta
+    * `Data ([]byte)`: Bytes de resultado, se houver
+    * `Log (string)`: Debug ou mensagem de erro
   * __Usage__:<br/>
-    Append and run a transaction.  If the transaction is valid, returns
+    Acrescentar e executar uma transação. Se a transação for válida,
 CodeType.OK
 
 ##### CheckTx
   * __Arguments__:
-    * `Data ([]byte)`: The request transaction bytes
+    * `Data ([]byte)`: Os bytes de transação solicitados
   * __Returns__:
-    * `Code (uint32)`: Response code
-    * `Data ([]byte)`: Result bytes, if any
-    * `Log (string)`: Debug or error message
+    * `Code (uint32)`: Código de resposta
+    * `Data ([]byte)`: Bytes de resultado, se houver
+    * `Log (string)`: Debug ou mensagem de erro
   * __Usage__:<br/>
-    Validate a transaction.  This message should not mutate the state.
-    Transactions are first run through CheckTx before broadcast to peers in the
-mempool layer.
-    You can make CheckTx semi-stateful and clear the state upon `Commit` or
+    Validar uma transação. Esta mensagem não deve mutar o estado.
+    As transações são primeiro executadas através do CheckTx antes da transmissão para os pares na camada mempool.
+    Você pode fazer o CheckTx semi-stateful e limpar o estado após `Commit` ou
 `BeginBlock`,
-    to allow for dependent sequences of transactions in the same block.
+    para permitir sequências dependentes de transações no mesmo bloco.
 
 ##### Commit
   * __Returns__:
-    * `Data ([]byte)`: The Merkle root hash
-    * `Log (string)`: Debug or error message
+    * `Data ([]byte)`: O hash Merkle raiz
+    * `Log (string)`: Debug ou erro de mensagem
   * __Usage__:<br/>
-    Return a Merkle root hash of the application state.
+    Retorna um hash Merkle raiz do estado da aplicação.
 
 ##### Query
   * __Arguments__:
-    * `Data ([]byte)`: The query request bytes
+    * `Data ([]byte)`: Os bytes de solicitação consultada
   * __Returns__:
-    * `Code (uint32)`: Response code
-    * `Data ([]byte)`: The query response bytes
-    * `Log (string)`: Debug or error message
+    * `Code (uint32)`: Código de resposta
+    * `Data ([]byte)`: Os bytes de resposta consultada
+    * `Log (string)`: Debug ou erro de mensagem
 
 ##### Flush
   * __Usage__:<br/>
-    Flush the response queue.  Applications that implement `types.Application`
-need not implement this message -- it's handled by the project.
+    Limpar a fila de resposta. Aplicações que implementam `types.Application`
+não precisa implementar esta mensagem - é tratada pelo projeto.
 
 ##### Info
   * __Returns__:
-    * `Data ([]byte)`: The info bytes
+    * `Data ([]byte)`: Os bytes de informação
   * __Usage__:<br/>
-    Return information about the application state.  Application specific.
+    Retorna informações sobre o estado da aplicação. Aplicação específicão.
 
 ##### SetOption
   * __Arguments__:
-    * `Key (string)`: Key to set
-    * `Value (string)`: Value to set for key
+    * `Key (string)`: Chave para definir
+    * `Value (string)`: Valor a definir para a chave
   * __Returns__:
-    * `Log (string)`: Debug or error message
+    * `Log (string)`: Debug ou mensagem de erro
   * __Usage__:<br/>
-    Set application options.  E.g. Key="mode", Value="mempool" for a mempool
-connection, or Key="mode", Value="consensus" for a consensus connection.
-    Other options are application specific.
+    Define as opções do aplicativo.  Exemplo Key="mode", Value="mempool" para uma conexão mempool
+, ou Key="mode", Value="consensus" para uma conexão de consenso.
+    Outras opções são específicas da aplicação.
 
 ##### InitChain
   * __Arguments__:
-    * `Validators ([]Validator)`: Initial genesis-validators
+    * `Validators ([]Validator)`: validadores de genesis iniciais
   * __Usage__:<br/>
-    Called once upon genesis
+    Chamado uma vez na genesis
 
 ##### BeginBlock
   * __Arguments__:
-    * `Height (uint64)`: The block height that is starting
+    * `Height (uint64)`: A altura do bloco que está começando
   * __Usage__:<br/>
-    Signals the beginning of a new block. Called prior to any AppendTxs.
+    Sinaliza o início de um novo bloco. Chamado antes de qualquer AppendTxs.
 
 ##### EndBlock
   * __Arguments__:
-    * `Height (uint64)`: The block height that ended
+    * `Height (uint64)`: A altura do bloco que terminou
   * __Returns__:
-    * `Validators ([]Validator)`: Changed validators with new voting powers (0
-      to remove)
+    * `Validators ([]Validator)`: Mudança de validadores com novos poderes de voto (0
+      para remover)
   * __Usage__:<br/>
-    Signals the end of a block.  Called prior to each Commit after all
-transactions
+    Sinaliza o fim de um bloco. Chamado antes de cada Commit após todas as
+transações
 
-See [the TMSP repository](https://github.com/tendermint/tmsp#message-types) for more details.
+Veja [o repositório TMSP](https://github.com/tendermint/tmsp#message-types) para mais detalhes.
 
-### IBC Packet Delivery Acknowledgement
+### Reconhecimento de entrega de pacotes IBC
 
-There are several reasons why a sender may want the acknowledgement of delivery
-of a packet by the receiving chain.  For example, the sender may not know the
-status of the destination chain, if it is expected to be faulty.  Or, the sender
-may want to impose a timeout on the packet (with the `MaxHeight` packet field),
-while any destination chain may suffer from a denial-of-service attack with a
-sudden spike in the number of incoming packets.
+Há várias razões pelas quais um remetente pode querer o reconhecimento da entrega de um pacote
+pela cadeia de recebimento. Por exemplo, o remetente pode não saber o status da cadeia de 
+destino, se for esperado que esteja com defeito. Ou, o remetente pode querer impor um tempo
+limite no pacote (com o campo `MaxHeight`), enquanto qualquer cadeia de destino pode sofrer 
+de um ataque de negação de serviço com um aumento repentino no número de pacotes de entrada.
 
-In these cases, the sender can require delivery acknowledgement by setting the
-initial packet status to `AckPending`.  Then, it is the receiving chain's
-responsibility to confirm delivery by including an abbreviated `IBCPacket` in the
-app Merkle hash.
+Nesses casos, o remetente pode exigir confirmação de entrega configurando o status
+do pacote inicial como `AckPending`. Em seguida, é a responsabilidade da
+cadeia receptora confirmar a entrega, incluindo uma abreviada `IBCPacket` no app Merkle hash.
 
-![Figure of Zone1, Zone2, and Hub IBC with
-acknowledgement](https://raw.githubusercontent.com/gnuclear/atom-whitepaper/master/msc/ibc_with_ack.png)
+![Figura da Zone1, Zone2, e Hub IBC com
+reconhecimento](https://raw.githubusercontent.com/gnuclear/atom-whitepaper/master/msc/ibc_with_ack.png)
 
-First, an `IBCBlockCommit` and `IBCPacketTx` are posted on "Hub" that proves
-the existence of an `IBCPacket` on "Zone1".  Say that `IBCPacketTx` has the
-following value:
+Primeiro, um `IBCBlockCommit` e` IBCPacketTx` são postados no "Hub" que prova 
+a existência de um `IBCPacket` na "Zone1". Digamos que `IBCPacketTx` tem o seguinte valor:
 
 - `FromChainID`: "Zone1"
 - `FromBlockHeight`: 100 (say)
@@ -1396,13 +1317,12 @@ following value:
     - `DstChainID`: "Zone2"
     - `Number`: 200 (say)
     - `Status`: `AckPending`
-    - `Type`: "coin"
-    - `MaxHeight`: 350 (say "Hub" is currently at height 300)
-  - `Payload`: &lt;The bytes of a "coin" payload&gt;
+    - `Type`: "moeda"
+    - `MaxHeight`: 350 (Dizer que "Hub" está atualmente na altura 300)
+  - `Payload`: &lt;Os bytes de uma carga paga de "moeda"&gt;
 
-Next, an `IBCBlockCommit` and `IBCPacketTx` are posted on "Zone2" that proves
-the existence of an `IBCPacket` on "Hub".  Say that `IBCPacketTx` has the
-following value:
+Em seguida, um `IBCBlockCommit` e `IBCPacketTx` são publicados na "Zone2" que comprova
+a existência de um `IBCPacket` em "Hub". Digamos que `IBCPacketTx` tem o seguinte valor:
 
 - `FromChainID`: "Hub"
 - `FromBlockHeight`: 300
@@ -1412,14 +1332,13 @@ following value:
     - `DstChainID`: "Zone2"
     - `Number`: 200
     - `Status`: `AckPending`
-    - `Type`: "coin"
+    - `Type`: "moeda"
     - `MaxHeight`: 350
-  - `Payload`: &lt;The same bytes of a "coin" payload&gt;
+  - `Payload`: &lt;Os mesmos bytes de uma carga paga de "moeda"&gt;
 
-Next, "Zone2" must include in its app-hash an abbreviated packet that shows the
-new status of `AckSent`.  An `IBCBlockCommit` and `IBCPacketTx` are posted back
-on "Hub" that proves the existence of an abbreviated `IBCPacket` on
-"Zone2".  Say that `IBCPacketTx` has the following value:
+Em seguida, "Zone2" deve incluir em seu app-hash um pacote abreviado que mostra o novo
+status de `AckSent`. Um `IBCBlockCommit` e `IBCPacketTx` são colocados de volta no "Hub"
+que comprova a existência de um `IBCPacket` abreviado na "Zone2". Digamos que `IBCPacketTx` tem o seguinte valor:
 
 - `FromChainID`: "Zone2"
 - `FromBlockHeight`: 400 (say)
@@ -1429,13 +1348,12 @@ on "Hub" that proves the existence of an abbreviated `IBCPacket` on
     - `DstChainID`: "Zone2"
     - `Number`: 200
     - `Status`: `AckSent`
-    - `Type`: "coin"
+    - `Type`: "moeda"
     - `MaxHeight`: 350
-  - `PayloadHash`: &lt;The hash bytes of the same "coin" payload&gt;
+  - `PayloadHash`: &lt;Os bytes de hash da mesma carga paga de "moeda"&gt;
 
-Finally, "Hub" must update the status of the packet from `AckPending` to
-`AckReceived`.  Evidence of this new finalized status should go back to
-"Zone2".  Say that `IBCPacketTx` has the following value:
+Finalmente, "Hub" deve atualizar o status do pacote de `AckPending` para`AckReceived`. 
+A evidência desse novo status finalizado deve voltar a "Zone2". Digamos que `IBCPacketTx` tem o seguinte valor:
 
 - `FromChainID`: "Hub"
 - `FromBlockHeight`: 301
@@ -1445,31 +1363,30 @@ Finally, "Hub" must update the status of the packet from `AckPending` to
     - `DstChainID`: "Zone2"
     - `Number`: 200
     - `Status`: `AckReceived`
-    - `Type`: "coin"
+    - `Type`: "moeda"
     - `MaxHeight`: 350
-  - `PayloadHash`: &lt;The hash bytes of the same "coin" payload&gt;
+  - `PayloadHash`: &lt;Os bytes de hash da mesma carga paga de "moeda"&gt;
 
-Meanwhile, "Zone1" may optimistically assume successful delivery of a "coin"
-packet unless evidence to the contrary is proven on "Hub".  In the example
-above, if "Hub" had not received an `AckSent` status from "Zone2" by block
-350, it would have set the status automatically to `Timeout`.  This evidence of
-a timeout can get posted back on "Zone1", and any tokens can be returned.
+Enquanto isso, "Zone1" pode assumir de maneira otimista a entrega bem-sucedida de um pacote 
+de "moeda", a menos que provas em contrário sejam comprovadas em "Hub". No exemplo acima, 
+se "Hub" não tivesse recebido um status `AckSent` de "Zone2" pelo bloco 350, ele teria 
+definido o status automaticamente para `Timeout`. Essa evidência de um tempo limite pode
+ser postada novamente na "Zone1", e quaisquer tokens podem ser retornados.
 
-![Figure of Zone1, Zone2, and Hub IBC with acknowledgement and
+![Figura da Zone1, Zone2, e Hub IBC com reconhecimento e 
 timeout](https://raw.githubusercontent.com/gnuclear/atom-whitepaper/master/msc/ibc_with_ack_timeout.png)
 
-### Merkle Tree & Proof Specification
+### Árvore Merkle e Especificação de Prova
 
-There are two types of Merkle trees supported in the Tendermint/Cosmos
-ecosystem: The Simple Tree, and the IAVL+ Tree.
+Existem dois tipos de árvores Merkle suportadas no ecossistema Tendermint / Cosmos: A Árvore Simples e a Árvore IAVL+.
 
-#### Simple Tree
+#### Árvore Simples
 
-The Simple Tree is a Merkle tree for a static list of elements.  If the number
-of items is not a power of two, some leaves will be at different levels.  Simple
-Tree tries to keep both sides of the tree the same height, but the left may be
-one greater.  This Merkle tree is used to Merkle-ize the transactions of a
-block, and the top level elements of the application state root.
+A Árvore Simples é uma árvore Merkle para uma lista estática de elementos. Se o número de
+itens não for um poder de dois, algumas folhas estarão em níveis diferentes. Árvore Simples
+tenta manter ambos os lados da árvore da mesma altura, mas a esquerda pode ter um maior.
+Esta árvore Merkle é usada para Merkle-lizar as transações de um bloco, e os elementos de
+nível superior da raiz do estado do aplicativo.
 
 ```
                 *
@@ -1485,141 +1402,123 @@ block, and the top level elements of the application state root.
    / \     / \     / \
   h0  h1  h2  h3  h4  h5
 
-  A SimpleTree with 7 elements
+  Uma ÁrvoreSimples com sete elementos
 ```
 
-#### IAVL+ Tree
+#### Árvore IAVL+
 
-The purpose of the IAVL+ data structure is to provide persistent storage for
-key-value pairs in the application state such that a deterministic Merkle root
-hash can be computed efficiently.  The tree is balanced using a variant of the
-[AVL algorithm](http://en.wikipedia.org/wiki/AVL_tree), and all operations are
-O(log(n)).
+O objetivo da estrutura de dados IAVL+ é fornecer armazenamento persistente para pares de valores-chave
+no estado do aplicativo, de modo que um hash determinista de raiz Merkle possa ser calculado
+eficientemente. A árvore é balanceada usando uma variante do [algoritmo AVL]
+(http://en.wikipedia.org/wiki/AVL_tree), e todas as operações são O(log(n)).
 
-In an AVL tree, the heights of the two child subtrees of any node differ by at
-most one.  Whenever this condition is violated upon an update, the tree is
-rebalanced by creating O(log(n)) new nodes that point to unmodified nodes of the
-old tree.  In the original AVL algorithm, inner nodes can also hold key-value
-pairs.  The AVL+ algorithm (note the plus) modifies the AVL algorithm to keep
-all values on leaf nodes, while only using branch-nodes to store keys.  This
-simplifies the algorithm while keeping the merkle hash trail short.
+Em uma árvore AVL, as alturas das duas subárvores filhas de qualquer nó diferem por no máximo um.
+Sempre que esta condição for violada após uma atualização, a árvore é rebalanceada criando O(log(n))
+novos nós que apontam para nós não modificados da árvore antiga. No algoritmo AVL original, os nós 
+internos também podem conter pares de valores-chave. O algoritmo AVL + (observe o sinal de adição)
+modifica o algoritmo AVL para manter todos os valores em folha de nós, enquanto 
+usando apenas nós de ramo para armazenar chaves. Isso simplifica o algoritmo, mantendo a trilha hash merkle curta.
 
-The AVL+ Tree is analogous to Ethereum's [Patricia
-tries](http://en.wikipedia.org/wiki/Radix_tree).  There are tradeoffs.  Keys do
-not need to be hashed prior to insertion in IAVL+ trees, so this provides faster
-ordered iteration in the key space which may benefit some applications.  The
-logic is simpler to implement, requiring only two types of nodes -- inner nodes
-and leaf nodes.  The Merkle proof is on average shorter, being a balanced binary
-tree.  On the other hand, the Merkle root of an IAVL+ tree depends on the order
-of updates.
+ A Árvore AVL + é análoga à Ethereum [Patricia tries] (http://en.wikipedia.org/wiki/Radix_tree).
+ Há compensações. Chaves não precisam ser hasheadas antes da inserção em árvores IAVL+, portanto, 
+ isso fornece iteração mais rápida ordenada no espaço-chave que pode beneficiar algumas aplicações.
+ A lógica é mais simples de implementar, requerendo apenas dois tipos de nós - nós internos e nós de folhas. 
+ A prova de Merkle é em média mais curta, sendo uma árvore binária equilibrada. Por outro lado, 
+ a raiz Merkle de uma árvore IAVL+ depende da ordem das atualizações.
 
-We will support additional efficient Merkle trees, such as Ethereum's Patricia
-Trie when the binary variant becomes available.
+Iremos apoiar outras árvores Merkle eficientes, como Patricia Trie, da Ethereum, quando a variante binária estiver disponível.
 
-### Transaction Types
+### Tipos de Transação
 
-In the canonical implementation, transactions are streamed to the Cosmos hub
-application via the TMSP interface.
+Na implementação canônica, as transações são transmitidas para o aplicativo Cosmos hub através da interface TMSP.
 
-The Cosmos Hub will accept a number of primary transaction types, including
-`SendTx`, `BondTx`, `UnbondTx`, `ReportHackTx`, `SlashTx`, `BurnAtomTx`,
-`ProposalCreateTx`, and `ProposalVoteTx`, which are fairly self-explanatory and
-will be documented in a future revision of this paper.  Here we document the two
-primary transaction types for IBC: `IBCBlockCommitTx` and `IBCPacketTx`.
+O Cosmos Hub aceitará uma série de tipos de transações primárias, incluindo `SendTx`, 
+`BondTx`, `UnbondTx`, `ReportHackTx`, `SlashTx`, `BurnAtomTx`, `ProposalCreateTx` e `ProposalVoteTx`, 
+que são relativamente auto-explicativas e será documentado em uma futura revisão deste artigo.
+Aqui documentamos os dois principais tipos de transação para IBC: `IBCBlockCommitTx` e `IBCPacketTx`.
 
 #### IBCBlockCommitTx
 
-An `IBCBlockCommitTx` transaction is composed of:
+Uma transação `IBCBlockCommitTx` é composta de:
 
-- `ChainID (string)`: The ID of the blockchain
-- `BlockHash ([]byte)`: The block-hash bytes, the Merkle root which includes the
-  app-hash
-- `BlockPartsHeader (PartSetHeader)`: The block part-set header bytes, only
-  needed to verify vote signatures
-- `BlockHeight (int)`: The height of the commit
-- `BlockRound (int)`: The round of the commit
-- `Commit ([]Vote)`: The +⅔ Tendermint `Precommit` votes that comprise a block
-  commit
-- `ValidatorsHash ([]byte)`: A Merkle-tree root hash of the new validator set
-- `ValidatorsHashProof (SimpleProof)`: A SimpleTree Merkle-proof for proving the
-  `ValidatorsHash` against the `BlockHash`
-- `AppHash ([]byte)`: A IAVLTree Merkle-tree root hash of the application state
-- `AppHashProof (SimpleProof)`: A SimpleTree Merkle-proof for proving the
-  `AppHash` against the `BlockHash`
+- `ChainID (string)`: O ID da blockchain
+- `BlockHash ([]byte)`: Os bytes de hash de bloco, a raiz Merkle que inclui o app-hash
+- `BlockPartsHeader (PartSetHeader)`: Os bytes de cabeçalho do conjunto de blocos,
+apenas necessários para verificar assinaturas de voto
+- `BlockHeight (int)`: A altura do commit
+- `BlockRound (int)`: A rodada do commit
+- `Commit ([]Vote)`: O +⅔ Tendermint `Precommit` de votos que compõem um bloco
+- `ValidatorsHash ([]byte)`: O hash da raiz da árvore-Merkle do novo conjunto de validadores
+- `ValidatorsHashProof (SimpleProof)`: Uma ÁrvoreSimples da prova-Merkle para provar o
+  `ValidatorsHash` contra o `BlockHash`
+- `AppHash ([]byte)`: Um hash da raiz da árvore-Merkle da Árvore IAVL do estado de aplicação
+- `AppHashProof (SimpleProof)`: Uma ÁrvoreSimples da prova-Merkle para provar o
+  `AppHash` contra o `BlockHash`
 
 #### IBCPacketTx
 
-An `IBCPacket` is composed of:
+Um `IBCPacket` é composto de:
 
-- `Header (IBCPacketHeader)`: The packet header
-- `Payload ([]byte)`: The bytes of the packet payload. _Optional_
-- `PayloadHash ([]byte)`: The hash for the bytes of the packet. _Optional_
+- `Header (IBCPacketHeader)`: O cabeçalho do pacote
+- `Payload ([]byte)`: Os bytes da carga paga do pacote. _Optional_
+- `PayloadHash ([]byte)`: O hash para os bytes do pacote. _Optional_
 
-Either one of `Payload` or `PayloadHash` must be present.  The hash of an
-`IBCPacket` is a simple Merkle root of the two items, `Header` and `Payload`.
-An `IBCPacket` without the full payload is called an _abbreviated packet_.
+Qualquer um dos `Payload` ou `PayloadHash` deve estar presente. O hash de um `IBCPacket` 
+é uma raiz Merkle simples dos dois itens, `Header` e `Payload`. Um `IBCPacket` sem a carga completa
+é chamado de _abbreviated packet_.
 
-An `IBCPacketHeader` is composed of:
+Um `IBCPacketHeader` é composto de:
 
-- `SrcChainID (string)`: The source blockchain ID
-- `DstChainID (string)`: The destination blockchain ID
-- `Number (int)`: A unique number for all packets
-- `Status (enum)`: Can be one of `AckPending`, `AckSent`, `AckReceived`,
-  `NoAck`, or `Timeout`
-- `Type (string)`: The types are application-dependent.  Cosmos reserves the
-  "coin" packet type
-- `MaxHeight (int)`: If status is not `NoAckWanted` or `AckReceived` by this
-  height, status becomes `Timeout`. _Optional_
+- `SrcChainID (string)`: O ID da blockchain fonte
+- `DstChainID (string)`: O ID da blockchain destino
+- `Number (int)`: Um número exclusivo para todos os pacotes
+- `Status (enum)`: Pode ser um `AckPending`, `AckSent`, `AckReceived`,
+  `NoAck`, ou `Timeout`
+- `Type (string)`: Os tipos são dependentes da aplicação. Cosmos reserva-se ao tipo de pacote "moeda"
+- `MaxHeight (int)`: Se status não for `NoAckWanted` ou `AckReceived` por essa altura, o status se tornará `Timeout`. _Opcional_
 
-An `IBCPacketTx` transaction is composed of:
+Uma transação `IBCPacketTx` é composta de:
 
-- `FromChainID (string)`: The ID of the blockchain which is providing this
-  packet; not necessarily the source
-- `FromBlockHeight (int)`: The blockchain height in which the following packet
-  is included (Merkle-ized) in the block-hash of the source chain
-- `Packet (IBCPacket)`: A packet of data, whose status may be one of
-  `AckPending`, `AckSent`, `AckReceived`, `NoAck`, or `Timeout`
-- `PacketProof (IAVLProof)`: A IAVLTree Merkle-proof for proving the packet's
-  hash against the `AppHash` of the source chain at given height
+- `FromChainID (string)`: O ID da blockchain que está fornecendo este pacote; Não necessariamente a fonte
+- `FromBlockHeight (int)`: A altura da blockchain na qual o seguinte pacote é incluído (Merkle-izado) no hash da blockchain de origem 
+- `Packet (IBCPacket)`: Um pacote de dados, cujo estado pode ser um 
+  `AckPending`, `AckSent`, `AckReceived`, `NoAck`, ou `Timeout`
+- `PacketProof (IAVLProof)`: Uma prova-Merkle da Árvore IAVL para para provar o hash do pacote contra o `AppHash' da cadeia de origem em determinada altura
 
-The sequence for sending a packet from "Zone1" to "Zone2" through the
-"Hub" is depicted in {Figure X}.  First, an `IBCPacketTx` proves to
-"Hub" that the packet is included in the app-state of "Zone1".  Then,
-another `IBCPacketTx` proves to "Zone2" that the packet is included in the
-app-state of "Hub".  During this procedure, the `IBCPacket` fields are
-identical: the `SrcChainID` is always "Zone1", and the `DstChainID` is always
-"Zone2".
+A seqüência para enviar um pacote da "Zone1" para a "Zone2" através do "Hub" é mostrada em {Figure X}. 
+Primeiro, um `IBCPacketTx` prova ao "Hub" que o pacote está incluído no estado da aplicação de "Zone1".
+Em seguida, outro `IBCPacketTx` prova a "Zone2" que o pacote está incluído no estado da aplicação "Hub". 
+Durante esse procedimento, os campos `IBCPacket` são idênticos: o `SrcChainID` é sempre "Zone1",
+e o `DstChainID` é sempre" Zone2 ".
 
-The `PacketProof` must have the correct Merkle-proof path, as follows:
+O `PacketProof` deve ter o caminho correto da prova-Merkle, da seguinte maneira:
 
 ```
 IBC/<SrcChainID>/<DstChainID>/<Number>
 
 ```
 
-When "Zone1" wants to send a packet to "Zone2" through "Hub", the
-`IBCPacket` data are identical whether the packet is Merkle-ized on "Zone1",
-the "Hub", or "Zone2".  The only mutable field is `Status` for tracking
-delivery, as shown below.
+Quando "Zone1" quer enviar um pacote para "Zone2" através do "Hub", os dados de `IBCPacket` 
+são idênticos se o pacote é Merkle-izado em "Zone1", no "Hub" ou "Zone2". O único campo mutável
+é `Status` para acompanhar a entrega, conforme mostrado abaixo.
 
-## Acknowledgements ############################################################
+## Agradecimentos ############################################################
 
-We thank our friends and peers for assistance in conceptualizing, reviewing, and
-providing support for our work with Tendermint and Cosmos.
+Agradecemos aos nossos amigos e colegas por sua ajuda na conceituação, revisão e apoio no nosso trabalho com Tendermint e Cosmos.
 
-* [Zaki Manian](https://github.com/zmanian) of
-  [SkuChain](https://www.skuchain.com/) provided much help in formatting and
-wording, especially under the TMSP section
-* [Jehan Tremback](https://github.com/jtremback) of Althea and Dustin Byington
-  for helping with initial iterations
-* [Andrew Miller](http://soc1024.com/) of [Honey
-  Badger](https://eprint.iacr.org/2016/199) for feedback on consensus
-* [Greg Slepak](https://fixingtao.com/) for feedback on consensus and wording
-* Also thanks to [Bill Gleim](https://github.com/gleim) and [Seunghwan
-  Han](http://www.seunghwanhan.com) for various contributions.
-* __Your name and organization here for your contribution__
+* [Zaki Manian](https://github.com/zmanian) da
+  [SkuChain](https://www.skuchain.com/) forneceu muita ajuda na formatação e redacção, especialmente sob a seção TMSP
+* [Jehan Tremback](https://github.com/jtremback) da Althea and Dustin Byington
+  por ajudar com iterações iniciais
+* [Andrew Miller](http://soc1024.com/) da [Honey
+  Badger](https://eprint.iacr.org/2016/199) pelo feedback sobre consenso
+* [Greg Slepak](https://fixingtao.com/) pelo feedback sobre consenso e redação
+* Também agradecemos ao [Bill Gleim](https://github.com/gleim) e [Seunghwan
+  Han](http://www.seunghwanhan.com) por várias contribuições.
+* [Pedro Augusto](https://github.com/ShooterXD) pela tradução para
+Português
 
-## Citations ###################################################################
+## Citações ###################################################################
 
 [1]: https://bitcoin.org/bitcoin.pdf
 [2]: http://zerocash-project.org/paper
@@ -1667,6 +1566,6 @@ wording, especially under the TMSP section
 * [21] Thin Client Security: https://en.bitcoin.it/wiki/Thin_Client_Security
 * [22] Ethereum 2.0 Mauve Paper: http://vitalik.ca/files/mauve_paper.html
 
-#### Unsorted links
+#### Links não classificados
 
 * https://www.docdroid.net/ec7xGzs/314477721-ethereum-platform-review-opportunities-and-challenges-for-private-and-consortium-blockchains.pdf.html
