@@ -986,7 +986,7 @@ não precisa implementar esta mensagem - é tratada pelo projeto.
     Sinaliza o fim de um bloco. Chamado antes de cada Commit após todas as
 transações
 
-Veja [o repositório TMSP](https://github.com/tendermint/tmsp#message-types) for more details.
+Veja [o repositório TMSP](https://github.com/tendermint/tmsp#message-types) para mais detalhes.
 
 ### Reconhecimento de entrega de pacotes IBC
 
