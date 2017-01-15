@@ -66,12 +66,12 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
     * [Superando Forks e Ataques de Censura](#superando-forks-e-ataques-de-censura)
     * [Especificação TMSP](#especificação-tmsp)
     * [Reconhecimento de entrega de pacotes IBC](#reconhecimento-de-entrega-de-pacotes-ibc)
-    * [Árvore Merkle &amp; Especificação de Prova](#árvore-merkle-&-especificação-de-prova)
+    * [Árvore Merkle &amp; Especificação de Prova](#árvore-merkle- -especificação-de-prova)
     * [Tipos de Transação](#tipos-de-transação)
       * [IBCBlockCommitTx](#ibcblockcommittx)
       * [IBCPacketTx](#ibcpackettx)
   * [Agradecimentos](#agradecimentos)
-  * [Citations](#citations)
+  * [Citações](#citações)
 
 ## Introdução ################################################################
 
@@ -1157,22 +1157,20 @@ Quando "Zone1" quer enviar um pacote para "Zone2" através do "Hub", os dados de
 
 ## Agradecimentos ############################################################
 
-We thank our friends and peers for assistance in conceptualizing, reviewing, and
-providing support for our work with Tendermint and Cosmos.
+Agradecemos aos nossos amigos e colegas por sua ajuda na conceituação, revisão e apoio no nosso trabalho com Tendermint e Cosmos.
 
-* [Zaki Manian](https://github.com/zmanian) of
-  [SkuChain](https://www.skuchain.com/) provided much help in formatting and
-wording, especially under the TMSP section
-* [Jehan Tremback](https://github.com/jtremback) of Althea and Dustin Byington
-  for helping with initial iterations
-* [Andrew Miller](http://soc1024.com/) of [Honey
-  Badger](https://eprint.iacr.org/2016/199) for feedback on consensus
-* [Greg Slepak](https://fixingtao.com/) for feedback on consensus and wording
-* Also thanks to [Bill Gleim](https://github.com/gleim) and [Seunghwan
-  Han](http://www.seunghwanhan.com) for various contributions.
-* __Your name and organization here for your contribution__
+* [Zaki Manian](https://github.com/zmanian) da
+  [SkuChain](https://www.skuchain.com/) forneceu muita ajuda na formatação e redacção, especialmente sob a seção TMSP
+* [Jehan Tremback](https://github.com/jtremback) da Althea and Dustin Byington
+  por ajudar com iterações iniciais
+* [Andrew Miller](http://soc1024.com/) da [Honey
+  Badger](https://eprint.iacr.org/2016/199) pelo feedback sobre consenso
+* [Greg Slepak](https://fixingtao.com/) pelo feedback sobre consenso e redação
+* Também agradecemos ao [Bill Gleim](https://github.com/gleim) e [Seunghwan
+  Han](http://www.seunghwanhan.com) por várias contribuições.
+* __Seu nome e organização aqui pela sua contribuição__
 
-## Citations ###################################################################
+## Citações ###################################################################
 
 [1]: https://bitcoin.org/bitcoin.pdf
 [2]: http://zerocash-project.org/paper
@@ -1220,6 +1218,6 @@ wording, especially under the TMSP section
 * [21] Thin Client Security: https://en.bitcoin.it/wiki/Thin_Client_Security
 * [22] Ethereum 2.0 Mauve Paper: http://vitalik.ca/files/mauve_paper.html
 
-#### Unsorted links
+#### Links não classificados
 
 * https://www.docdroid.net/ec7xGzs/314477721-ethereum-platform-review-opportunities-and-challenges-for-private-and-consortium-blockchains.pdf.html
