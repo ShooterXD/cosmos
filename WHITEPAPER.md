@@ -67,7 +67,7 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
     * [Especificação TMSP](#especificação-tmsp)
     * [Reconhecimento de entrega de pacotes IBC](#reconhecimento-de-entrega-de-pacotes-ibc)
     * [Árvore Merkle &amp; Especificação de Prova](#árvore-merkle--especificação-de-prova)
-    * [Transaction Types](#transaction-types)
+    * [Tipos de Transação](#tipos-de-transação)
       * [IBCBlockCommitTx](#ibcblockcommittx)
       * [IBCPacketTx](#ibcpackettx)
   * [Acknowledgements](#acknowledgements)
@@ -1060,16 +1060,11 @@ timeout](https://raw.githubusercontent.com/gnuclear/atom-whitepaper/master/msc/i
 
 ### Árvore Merkle & Especificação de Prova
 
-There are two types of Merkle trees supported in the Tendermint/Cosmos
-ecosystem: The Simple Tree, and the IAVL+ Tree.
+Existem dois tipos de árvores Merkle suportadas no ecossistema Tendermint / Cosmos: A Árvore Simples e a Árvore IAVL+.
 
-#### Simple Tree
+#### Árvore Simples
 
-The Simple Tree is a Merkle tree for a static list of elements.  If the number
-of items is not a power of two, some leaves will be at different levels.  Simple
-Tree tries to keep both sides of the tree the same height, but the left may be
-one greater.  This Merkle tree is used to Merkle-ize the transactions of a
-block, and the top level elements of the application state root.
+A Árvore Simples é uma árvore Merkle para uma lista estática de elementos. Se o número de itens não for um poder de dois, algumas folhas estarão em níveis diferentes. Árvore Simples tenta manter ambos os lados da árvore da mesma altura, mas a esquerda pode ter um maior. Esta árvore Merkle é usada para Merkle-lizar as transações de um bloco, e os elementos de nível superior da raiz do estado do aplicativo.
 
 ```
                 *
@@ -1085,38 +1080,20 @@ block, and the top level elements of the application state root.
    / \     / \     / \
   h0  h1  h2  h3  h4  h5
 
-  A SimpleTree with 7 elements
+  Uma ÁrvoreSimples com sete elementos
 ```
 
-#### IAVL+ Tree
+#### Árvore IAVL+
 
-The purpose of the IAVL+ data structure is to provide persistent storage for
-key-value pairs in the application state such that a deterministic Merkle root
-hash can be computed efficiently.  The tree is balanced using a variant of the
-[AVL algorithm](http://en.wikipedia.org/wiki/AVL_tree), and all operations are
-O(log(n)).
+O objetivo da estrutura de dados IAVL+ é fornecer armazenamento persistente para pares de valores-chave no estado do aplicativo, de modo que um hash determinista de raiz Merkle possa ser calculado eficientemente. A árvore é balanceada usando uma variante do [algoritmo AVL] (http://en.wikipedia.org/wiki/AVL_tree), e todas as operações são O(log(n)).
 
-In an AVL tree, the heights of the two child subtrees of any node differ by at
-most one.  Whenever this condition is violated upon an update, the tree is
-rebalanced by creating O(log(n)) new nodes that point to unmodified nodes of the
-old tree.  In the original AVL algorithm, inner nodes can also hold key-value
-pairs.  The AVL+ algorithm (note the plus) modifies the AVL algorithm to keep
-all values on leaf nodes, while only using branch-nodes to store keys.  This
-simplifies the algorithm while keeping the merkle hash trail short.
+Em uma árvore AVL, as alturas das duas subárvores filhas de qualquer nó diferem por no máximo um. Sempre que esta condição for violada após uma atualização, a árvore é rebalanceada criando O(log(n)) novos nós que apontam para nós não modificados da árvore antiga. No algoritmo AVL original, os nós internos também podem conter pares de valores-chave. O algoritmo AVL + (observe o sinal de adição) modifica o algoritmo AVL para manter todos os valores em folha de nós, enquanto usando apenas nós de ramo para armazenar chaves. Isso simplifica o algoritmo, mantendo a trilha hash merkle curta.
 
-The AVL+ Tree is analogous to Ethereum's [Patricia
-tries](http://en.wikipedia.org/wiki/Radix_tree).  There are tradeoffs.  Keys do
-not need to be hashed prior to insertion in IAVL+ trees, so this provides faster
-ordered iteration in the key space which may benefit some applications.  The
-logic is simpler to implement, requiring only two types of nodes -- inner nodes
-and leaf nodes.  The Merkle proof is on average shorter, being a balanced binary
-tree.  On the other hand, the Merkle root of an IAVL+ tree depends on the order
-of updates.
+ A Árvore AVL + é análoga à Ethereum [Patricia tries] (http://en.wikipedia.org/wiki/Radix_tree). Há compensações. Chaves não precisam ser hasheadas antes da inserção em árvores IAVL+, portanto, isso fornece iteração mais rápida ordenada no espaço-chave que pode beneficiar algumas aplicações. A lógica é mais simples de implementar, requerendo apenas dois tipos de nós - nós internos e nós de folhas. A prova de Merkle é em média mais curta, sendo uma árvore binária equilibrada. Por outro lado, a raiz Merkle de uma árvore IAVL+ depende da ordem das atualizações.
 
-We will support additional efficient Merkle trees, such as Ethereum's Patricia
-Trie when the binary variant becomes available.
+Iremos apoiar outras árvores Merkle eficientes, como Patricia Trie, da Ethereum, quando a variante binária estiver disponível.
 
-### Transaction Types
+### Tipos de Transação
 
 In the canonical implementation, transactions are streamed to the Cosmos hub
 application via the TMSP interface.
