@@ -66,7 +66,7 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
     * [Superando Forks e Ataques de Censura](#superando-forks-e-ataques-de-censura)
     * [Especificação TMSP](#especificação-tmsp)
     * [Reconhecimento de entrega de pacotes IBC](#reconhecimento-de-entrega-de-pacotes-ibc)
-    * [Árvore Merkle &amp; Especificação de Prova](#árvore-merkle--especificação-de-prova)
+    * [Árvore Merkle e Especificação de Prova](#árvore-merkle-e-especificação-de-prova)
     * [Tipos de Transação](#tipos-de-transação)
       * [IBCBlockCommitTx](#ibcblockcommittx)
       * [IBCPacketTx](#ibcpackettx)
@@ -1058,7 +1058,7 @@ Enquanto isso, "Zone1" pode assumir de maneira otimista a entrega bem-sucedida d
 ![Figura da Zone1, Zone2, e Hub IBC com reconhecimento e 
 timeout](https://raw.githubusercontent.com/gnuclear/atom-whitepaper/master/msc/ibc_with_ack_timeout.png)
 
-### Árvore Merkle & Especificação de Prova
+### Árvore Merkle e Especificação de Prova
 
 Existem dois tipos de árvores Merkle suportadas no ecossistema Tendermint / Cosmos: A Árvore Simples e a Árvore IAVL+.
 
