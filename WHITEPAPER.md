@@ -44,7 +44,7 @@ _NOTA: Se você pode ler isso no GitHub, então ainda estamos desenvolvendo este
     * [Parâmetro de Mudança de Proposta](#parâmetro-de-mudança-de-proposta)
     * [Texto da Proposta](#texto-da-proposta)
   * [Roteiro](#roteiro)
-  * [Trabalho Relacionado](#trabalh-relacionado)
+  * [Trabalho Relacionado](#trabalho-relacionado)
     * [Consensus Systems](#consensus-systems)
       * [Classic Byzantine Fault Tolerance](#classic-byzantine-fault-tolerance)
       * [BitShares Delegated Stake](#bitshares-delegated-stake)
